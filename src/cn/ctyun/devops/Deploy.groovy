@@ -2,6 +2,8 @@ package cn.ctyun.devops
 
 import groovy.time.TimeCategory
 import org.yaml.snakeyaml.Yaml
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurperClassic
 
 /**
  *
@@ -24,7 +26,26 @@ def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/dep
     this.timeoutMinutes = timeoutMinutes
     this.sleepTime = sleepTime
     this.kind = kind
+    initK8sPropertities()
     return this
+}
+
+def initK8sPropertities() {
+    try {
+        def content = readFile this.controllerFilePath
+        Yaml parser = new Yaml()
+        def data = parser.load(content)
+        def kind = data["kind"]
+        if (kind == null || kind == "" || kind.toLowerCase() != this.kind) {
+            throw "wrong controller file,expected ${this.kind},actually value is ${kind}"
+        }
+        echo "${data}"
+        this.controllerNamespace = data["metadata"]["namespace"] || "default"
+        this.controllerName = data["metadata"]["name"]
+    } catch (Exception exc) {
+        echo "failed to readFile ${this.controllerFilePath},exception: ${exc}."
+        throw exc
+    }
 }
 
 def start() {
@@ -36,14 +57,7 @@ def start() {
     }
     if (this.watch) {
         echo "begin watch ${this.kind}..."
-        sh "pwd"
-        sh "ls -al"
-        sh "ls ${this.controllerFilePath}"
-        def content = readFile this.controllerFilePath
-        Yaml parser = new Yaml()
-        def data = parser.load(content)
-        echo "${data}"
-        echo "${data["kind"]}"
+        monitorDeployment(this.controllerNamespace, this.controllerName, this.timeoutMinutes, this.sleepTime, this.kind)
     }
     return this
 }
@@ -94,4 +108,68 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 10, sl
             sleep(sleepTime)
         }
     }
+}
+
+def getDeployment(String namespace = "default", String name, String kind="deployment") {
+    sh "kubectl get ${kind} -n ${namespace} ${name} -o json > ${namespace}-${name}-yaml.yml"
+    def jsonStr = readFile "${namespace}-${name}-yaml.yml"
+    def jsonSlurper = new JsonSlurperClassic()
+    def jsonObj = jsonSlurper.parseText(jsonStr)
+    return jsonObj
+}
+
+def printContainerLogs(deployJson) {
+    if (deployJson == null) {
+        return;
+    }
+    def namespace = deployJson.metadata.namespace
+    def name = deployJson.metadata.name
+    def labels=""
+    deployJson.spec.template.metadata.labels.each { k, v ->
+        labels = "${labels} -l=${k}=${v}"
+    }
+    sh "kubectl describe pods -n ${namespace} ${labels}"
+}
+
+def isDeploymentReady(deployJson) {
+    def status = deployJson.status
+    def replicas = status.replicas
+    def unavailable = status['unavailableReplicas']
+    def ready = status['readyReplicas']
+    if (unavailable != null) {
+        return false
+    }
+    def deployReady = (ready != null && ready == replicas)
+    // get pod information
+    if (deployJson.spec.template.metadata != null && deployReady) {
+        if (deployJson.spec.template.metadata.labels != null) {
+            def labels=""
+            def namespace = deployJson.metadata.namespace
+            def name = deployJson.metadata.name
+            deployJson.spec.template.metadata.labels.each { k, v ->
+                labels = "${labels} -l=${k}=${v}"
+            }
+            if (labels != "") {
+                sh "kubectl get pods -n ${namespace} ${labels} -o json > ${namespace}-${name}-json.json"
+                def jsonStr = readFile "${namespace}-${name}-json.json"
+                def jsonSlurper = new JsonSlurperClassic()
+                def jsonObj = jsonSlurper.parseText(jsonStr)
+                def isReady = false
+                def totalCount = 0
+                def readyCount = 0
+                jsonObj.items.each { k, v ->
+                    echo "pod phase ${k.status.phase}"
+                    if (k.status.phase != "Terminating") {
+                        totalCount++;
+                        if (k.status.phase == "Running") {
+                            readyCount++;
+                        }
+                    }
+                }
+                echo "Pod running count ${totalCount} == ${readyCount}"
+                return totalCount > 0 && totalCount == readyCount
+            }
+        }
+    }
+    return deployReady
 }
