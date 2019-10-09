@@ -38,9 +38,9 @@ def start() {
         echo "begin watch ${this.kind}..."
         sh "pwd"
         sh "ls -al"
-        def filePath = "deploy/ingress.yaml"
+        sh "ls ${this.controllerFilePath}"
         Yaml parser = new Yaml()
-        HashMap content = parser.load((filePath as File).text)
+        HashMap content = parser.load((this.controllerFilePath as File).text)
         echo "${content}"
         echo "${content["kind"]}"
     }
