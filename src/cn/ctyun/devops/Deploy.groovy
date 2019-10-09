@@ -29,7 +29,7 @@ def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/dep
 
 def start() {
     try {
-        sh "kubectl apply -f ${this.target}"
+        sh "kubectl apply -f ${this.resourcePath}"
     } catch (Exception exc) {
         echo "failed to deploy,exception: ${exc}."
         throw exc
@@ -49,7 +49,7 @@ def start() {
 
 def delete() {
     try {
-        sh "kubectl delete -f ${this.target}"
+        sh "kubectl delete -f ${this.resourcePath}"
     } catch (Exception exc) {
         echo "failed to delete resource,exception: ${exc}."
         throw exc
