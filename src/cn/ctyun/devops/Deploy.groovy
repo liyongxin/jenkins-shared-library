@@ -26,7 +26,6 @@ def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/dep
     this.timeoutMinutes = timeoutMinutes
     this.sleepTime = sleepTime
     this.kind = kind
-    initK8sPropertities()
     return this
 }
 
@@ -40,8 +39,8 @@ def initK8sPropertities() {
             throw "wrong controller file,expected ${this.kind},actually value is ${kind}"
         }
         echo "${data}"
-        this.controllerNamespace = data["metadata"]["namespace"].toString() || "default"
-        this.controllerName = data["metadata"]["name"].toString()
+        this.controllerNamespace = data["metadata"]["namespace"] || "default"
+        this.controllerName = data["metadata"]["name"]
     } catch (Exception exc) {
         echo "failed to readFile ${this.controllerFilePath},exception: ${exc}."
         throw exc
@@ -57,8 +56,9 @@ def start() {
     }
     if (this.watch) {
         echo "begin watch ${this.kind}..."
+        initK8sPropertities()
         //monitorDeployment("aa", "vv")
-        String namespace = this.controllerNamespace.toString()
+        String namespace = this.controllerNamespace
         String name = this.controllerName
         int timeoutMinutes = this.timeoutMinutes
         int sleepTime = this.sleepTime
