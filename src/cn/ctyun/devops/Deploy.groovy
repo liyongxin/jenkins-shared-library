@@ -40,7 +40,7 @@ def start() {
         sh "ls -al"
         sh "ls ${this.controllerFilePath}"
         Yaml parser = new Yaml()
-        HashMap content = parser.load((this.controllerFilePath as File).text)
+        HashMap content = parser.load(("./deploy/deploy.yaml" as File).text)
         echo "${content}"
         echo "${content["kind"]}"
     }
