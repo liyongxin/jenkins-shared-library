@@ -40,7 +40,7 @@ def start() {
         sh "ls -al"
         sh "ls ${this.controllerFilePath}"
         Yaml parser = new Yaml()
-        HashMap content = parser.load(("./deploy/deploy.yaml" as File).text)
+        HashMap content = parser.load(("/home/jenkins/agent/workspace/test-multi-branch_master/src/ctcloud/test-jenkins-build/deploy/deploy.yaml" as File).text)
         echo "${content}"
         echo "${content["kind"]}"
     }
