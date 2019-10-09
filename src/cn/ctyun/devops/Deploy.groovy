@@ -1,5 +1,5 @@
 @Grapes(
-        @Grab(group='org.yaml', module='snakeyaml', version='1.19')
+        @Grab(group='org.yaml', module='snakeyaml', version='1.17')
 )
 
 package cn.ctyun.devops
