@@ -3,18 +3,27 @@ package cn.ctyun.devops
 import groovy.time.TimeCategory
 import org.yaml.snakeyaml.Yaml
 
-def deploy(String dir, String resourceYaml, Boolean watch = true, int timeoutMinutes = 5, int sleepTime = 5, String kind = "deployment") {
-    this.resourceYaml = resourceYaml
-    this.target = dir
-    if (dir == "" && resourceYaml != "") {
-        echo "dir param is empty, will use resourceYaml as deploy target"
-        this.target = resourceYaml
+/**
+ *
+ * @param resourcePath: resource file path, dir or file
+ * @param controllerFilePath: controller file path, such as deployment
+ * @param watch: weather watch resource creation processing
+ * @param timeoutMinutes
+ * @param sleepTime
+ * @param kind
+ * @return
+ */
+def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/depoly.yaml", Boolean watch = true, int timeoutMinutes = 5, int sleepTime = 5, String kind = "deployment") {
+    this.controllerFilePath = controllerFilePath
+    this.resourcePath = resourcePath
+    if (resourcePath == "" && controllerFilePath != "") {
+        echo "resourcePath param is empty, will use controllerFilePath as deploy target"
+        this.resourcePath = controllerFilePath
     }
     this.watch = watch
     this.timeoutMinutes = timeoutMinutes
     this.sleepTime = sleepTime
     this.kind = kind
-    //todo for more param support
     return this
 }
 
@@ -27,6 +36,8 @@ def start() {
     }
     if (this.watch) {
         echo "begin watch ${this.kind}..."
+        sh "pwd"
+        sh "ls -al"
         def filePath = "deploy/ingress.yaml"
         Yaml parser = new Yaml()
         HashMap content = parser.load((filePath as File).text)
