@@ -1,11 +1,6 @@
-@Grapes(
-        @Grab(group='org.yaml', module='snakeyaml', version='1.17')
-)
-
 package cn.ctyun.devops
 
 import groovy.time.TimeCategory
-import cn.ctyun.devops.YamlFile
 import org.yaml.snakeyaml.Yaml
 
 def deploy(String dir, String resourceYaml, Boolean watch = true, int timeoutMinutes = 5, int sleepTime = 5, String kind = "deployment") {
@@ -32,11 +27,11 @@ def start() {
     }
     if (this.watch) {
         echo "begin watch ${this.kind}..."
-        def filePath = "deploy/deploy.yaml"
-        def fileContent = readFile filePath
-        def yaml = new Yaml()
-        def content = yaml.load(fileContent)
+        def filePath = "deploy/ingress.yaml"
+        Yaml parser = new Yaml()
+        HashMap content = parser.load((filePath as File).text)
         echo "${content}"
+        echo "${content["kind"]}"
     }
     return this
 }

@@ -1,11 +1,6 @@
-@Grapes(
-    @Grab(group='org.yaml', module='snakeyaml', version='1.19')
-)
-
 package cn.ctyun.devops
 
 import org.yaml.snakeyaml.Yaml
-import groovy.json.*
 
 def loadFile(filePath, Boolean debug = false) {
     this.debug = debug

@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: business-frontend
+  namespace: bar
+spec:
+  rules:
+  - host: bs.ctcdn.cn
+    http:
+      paths:
+      - backend:
+          serviceName: business-frontend
+          servicePort: 80
+        path: /
+status:
+  loadBalancer: {}
