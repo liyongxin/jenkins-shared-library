@@ -8,6 +8,6 @@ static def dockerBuild(String dockerfile = "Dockerfile", String context = ".", S
     return new Build().build(dockerfile, context, address, tag, credentialsId)
 }
 
-static def deploy(String dir = "deploy") {
-    return new Deploy().deploy(dir)
+static def deploy(String dir, String resourceYaml, Boolean watch = true, int timeoutMinutes = 5, int sleepTime = 5, String kind = "deployment") {
+    return new Deploy().deploy(dir, resourceYaml, watch, timeoutMinutes, sleepTime, kind)
 }
