@@ -40,8 +40,8 @@ def initK8sPropertities() {
             throw "wrong controller file,expected ${this.kind},actually value is ${kind}"
         }
         echo "${data}"
-        this.controllerNamespace = data["metadata"]["namespace"] || "default"
-        this.controllerName = data["metadata"]["name"]
+        this.controllerNamespace = data["metadata"]["namespace"].toString() || "default"
+        this.controllerName = data["metadata"]["name"].toString()
     } catch (Exception exc) {
         echo "failed to readFile ${this.controllerFilePath},exception: ${exc}."
         throw exc
@@ -57,7 +57,8 @@ def start() {
     }
     if (this.watch) {
         echo "begin watch ${this.kind}..."
-        monitorDeployment(this.controllerNamespace, this.controllerName, this.timeoutMinutes, this.sleepTime, this.kind)
+        monitorDeployment("aa", "vv")
+        //monitorDeployment(this.controllerNamespace, this.controllerName, this.timeoutMinutes, this.sleepTime, this.kind)
     }
     return this
 }
