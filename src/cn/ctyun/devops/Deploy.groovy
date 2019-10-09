@@ -57,7 +57,7 @@ def start() {
     }
     if (this.watch) {
         echo "begin watch ${this.kind}..."
-        monitorDeployment("aa", "vv")
+        //monitorDeployment("aa", "vv")
         String namespace = this.controllerNamespace.toString()
         String name = this.controllerName
         int timeoutMinutes = this.timeoutMinutes
