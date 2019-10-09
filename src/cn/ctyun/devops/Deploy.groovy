@@ -39,7 +39,10 @@ def initK8sPropertities() {
             throw "wrong controller file,expected ${this.kind},actually value is ${kind}"
         }
         echo "${data}"
-        this.controllerNamespace = data["metadata"]["namespace"] || "default"
+        this.controllerNamespace = data["metadata"]["namespace"]
+        if (null == this.controllerNamespace || "" == this.controllerNamespace){
+            this.controllerNamespace = "default"
+        }
         this.controllerName = data["metadata"]["name"]
     } catch (Exception exc) {
         echo "failed to readFile ${this.controllerFilePath},exception: ${exc}."
