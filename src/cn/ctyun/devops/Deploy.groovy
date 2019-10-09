@@ -15,7 +15,7 @@ import groovy.json.JsonSlurperClassic
  * @param kind
  * @return
  */
-def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/depoly.yaml", Boolean watch = true, int timeoutMinutes = 5, int sleepTime = 5, String kind = "deployment") {
+def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/depoly.yaml", Boolean watch = true, int timeoutMinutes = 3, int sleepTime = 5, String kind = "deployment") {
     this.controllerFilePath = controllerFilePath
     this.resourcePath = resourcePath
     if (resourcePath == "" && controllerFilePath != "") {
@@ -58,7 +58,12 @@ def start() {
     if (this.watch) {
         echo "begin watch ${this.kind}..."
         monitorDeployment("aa", "vv")
-        //monitorDeployment(this.controllerNamespace, this.controllerName, this.timeoutMinutes, this.sleepTime, this.kind)
+        String namespace = this.controllerNamespace.toString()
+        String name = this.controllerName
+        int timeoutMinutes = this.timeoutMinutes
+        int sleepTime = this.sleepTime
+        String kind = this.kind
+        monitorDeployment(namespace, name, timeoutMinutes, sleepTime, kind)
     }
     return this
 }
@@ -73,9 +78,9 @@ def delete() {
     return this
 }
 
-def monitorDeployment(String namespace, String name, int timeoutMinutes = 10, sleepTime = 2, String kind = "deployment") {
+def monitorDeployment(String namespace, String name, int timeoutMinutes = 5, sleepTime = 3, String kind = "deployment") {
     def readyCount = 0
-    def readyTarget = 3
+    def readyTarget = 5
     use( TimeCategory ) {
         def endTime = TimeCategory.plus(new Date(), TimeCategory.getMinutes(timeoutMinutes))
         def lastRolling
@@ -109,6 +114,7 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 10, sl
             sleep(sleepTime)
         }
     }
+    return this
 }
 
 def getDeployment(String namespace = "default", String name, String kind="deployment") {
