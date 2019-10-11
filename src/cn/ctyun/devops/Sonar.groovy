@@ -26,25 +26,9 @@ def startToSonar(install=true) {
         scannerCLI = "${scannerHome}/bin/sonar-scanner"
         sh "chmod +x ${scannerHome}/bin/sonar-scanner || true"
     }
-    def isDebug = ""
-    if (this.debug) {
-        isDebug = " -X "
-    }
-    def gitbranch = ""
-    try {
-        gitbranch = env.BRANCH_NAME
-        if (gitbranch == null) {
-            sh "git branch | grep '*' > gitbranch.file"
-            gitbranch = readFile "gitbranch.file"
-            gitbranch = gitbranch.replace("*", "").replace(" ", "")
-        }
-    } catch (Exception exc) {}
-    if (gitbranch != null && gitbranch != "") {
-        isDebug = "-Dsonar.branch.name=${gitbranch} ${isDebug}"
-    }
     sh """
         cd ${this.folder}
-        ${scannerCLI} ${isDebug} 
+        ${scannerCLI} ${this.debug} 
         ls -la .scannerwork
     """
     if (this.folder != ".") {
