@@ -19,27 +19,28 @@ def start(install=false) {
 }
 
 def startToSonar(install=true) {
-
-    def scannerCLI = "sonar-scanner";
-    if (install) {
-        def scannerHome = tool 'sonarqube';
-        scannerCLI = "${scannerHome}/bin/sonar-scanner"
-        sh "chmod +x ${scannerHome}/bin/sonar-scanner || true"
-    }
-    def isDebug = ""
-    if (this.debug) {
-        isDebug = " -X "
-    }
-    sh """
+    withSonarQubeEnv('sonarqube') {
+        def scannerCLI = "sonar-scanner";
+        if (install) {
+            def scannerHome = tool 'sonarqube';
+            scannerCLI = "${scannerHome}/bin/sonar-scanner"
+            sh "chmod +x ${scannerHome}/bin/sonar-scanner || true"
+        }
+        def isDebug = ""
+        if (this.debug) {
+            isDebug = " -X "
+        }
+        sh """
         cd ${this.folder}
         ${scannerCLI} ${isDebug} 
         ls -la .scannerwork
     """
-    if (this.folder != ".") {
-        sh """
+        if (this.folder != ".") {
+            sh """
             cp -r ${this.folder}/.scannerwork .
             ls -la .scannerwork
         """
+        }
     }
     timeout(60) {
         def qg = waitForQualityGate()
