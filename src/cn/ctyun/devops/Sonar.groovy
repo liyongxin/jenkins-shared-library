@@ -26,9 +26,13 @@ def startToSonar(install=true) {
         scannerCLI = "${scannerHome}/bin/sonar-scanner"
         sh "chmod +x ${scannerHome}/bin/sonar-scanner || true"
     }
+    def isDebug = ""
+    if (this.debug) {
+        isDebug = " -X "
+    }
     sh """
         cd ${this.folder}
-        ${scannerCLI} ${this.debug} 
+        ${scannerCLI} ${isDebug} 
         ls -la .scannerwork
     """
     if (this.folder != ".") {
