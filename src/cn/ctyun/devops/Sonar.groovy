@@ -2,6 +2,7 @@
 package cn.ctyun.devops
 
 def scan(Boolean debug = true, Boolean waitScan = true) {
+    this.folder = "."
     this.debug = debug
     this.waitScan = waitScan
     return this
