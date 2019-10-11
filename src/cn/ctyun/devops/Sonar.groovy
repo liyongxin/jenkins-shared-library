@@ -31,18 +31,19 @@ def startToSonar(install=true) {
             isDebug = " -X "
         }
         sh """
-        cd ${this.folder}
-        ${scannerCLI} ${isDebug} 
-        ls -la .scannerwork
-    """
-        if (this.folder != ".") {
-            sh """
-            cp -r ${this.folder}/.scannerwork .
+            cd ${this.folder}
+            ${scannerCLI} ${isDebug} 
             ls -la .scannerwork
         """
+        if (this.folder != ".") {
+            sh """
+                cp -r ${this.folder}/.scannerwork .
+                ls -la .scannerwork
+            """
         }
     }
-    timeout(60) {
+    //wait 3min
+    timeout(3) {
         def qg = waitForQualityGate()
         if (qg.status != 'OK') {
             error "未通过Sonarqube的代码质量阈检查，请及时修改！failure: ${qg.status}"
