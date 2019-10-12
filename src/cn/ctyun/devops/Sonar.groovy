@@ -14,7 +14,11 @@ def start(install=false) {
         this.startToSonar(install)
     }
     catch (Exception exc) {
-        echo "error scan sonar: ${exc}"
+        if(this.interupt){
+            throw ${exc}
+        }else{
+            echo "error scan sonar: ${exc}"
+        }
     }
     return this
 }
@@ -43,14 +47,16 @@ def startToSonar(install=false) {
             """
         }
     }
-    //wait 3min
-    timeout(time: 3, unit: 'MINUTES') {
-        def qg = waitForQualityGate()
-        if (qg.status != 'Error') {
-            echo "Status: ${qg.status}"
-            error "Pipeline aborted due to quality gate failure: ${qg.status}"
-            throw "Pipeline aborted due to quality gate failure: ${qg.status}" as Throwable
+    if(this.waitScan){
+        //wait 3min
+        timeout(time: 3, unit: 'MINUTES') {
+            def qg = waitForQualityGate()
+            if (qg.status != 'Error') {
+                error "Pipeline aborted due to quality gate failure: ${qg.status}"
+            }
         }
+    }else{
+        echo "skip waitScan"
     }
     return this
 }
