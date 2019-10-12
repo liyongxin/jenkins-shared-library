@@ -46,7 +46,7 @@ def startToSonar(install=true) {
     timeout(time: 3, unit: 'MINUTES') {
         def qg = waitForQualityGate()
         echo "Status first: ${qg.status}"
-        if (qg.status != 'OK') {
+        if (qg.status != 'Error') {
             echo "Status: ${qg.status}"
             error "Pipeline aborted due to quality gate failure: ${qg.status}"
         }
