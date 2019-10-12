@@ -164,12 +164,11 @@ def isDeploymentReady(deployJson) {
                 def jsonStr = readFile "${namespace}-${name}-json.json"
                 def jsonSlurper = new JsonSlurperClassic()
                 def jsonObj = jsonSlurper.parseText(jsonStr)
-                def isReady = false
                 def totalCount = 0
                 def readyCount = 0
                 jsonObj.items.each { k, v ->
                     echo "pod phase ${k.status.phase}"
-                    if (k.status.phase != "Terminating") {
+                    if (k.status.phase != "Terminating" && k.status.phase != "Evicted") {
                         totalCount++;
                         if (k.status.phase == "Running") {
                             readyCount++;
