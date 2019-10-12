@@ -43,10 +43,12 @@ def startToSonar(install=true) {
         }
     }
     //wait 3min
-    timeout(3) {
+    timeout(time: 3, unit: 'Minutes') {
         def qg = waitForQualityGate()
+        echo "Status first: ${qg.status}"
         if (qg.status != 'OK') {
-            error "未通过Sonarqube的代码质量阈检查，请及时修改！failure: ${qg.status}"
+            echo "Status: ${qg.status}"
+            error "Pipeline aborted due to quality gate failure: ${qg.status}"
         }
     }
     return this
