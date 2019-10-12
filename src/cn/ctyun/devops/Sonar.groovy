@@ -15,7 +15,7 @@ def start(install=false) {
     }
     catch (Exception exc) {
         if(this.interupt){
-            throw ${exc}
+            throw exc
         }else{
             echo "error scan sonar: ${exc}"
         }
