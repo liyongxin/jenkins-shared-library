@@ -43,7 +43,7 @@ def startToSonar(install=true) {
         }
     }
     //wait 3min
-    timeout(time: 3, unit: 'Minutes') {
+    timeout(time: 3, unit: 'MINUTES') {
         def qg = waitForQualityGate()
         echo "Status first: ${qg.status}"
         if (qg.status != 'OK') {
