@@ -12,6 +12,6 @@ static def deploy(String resourcePath, String controllerFilePath, Boolean watch 
     return new Deploy().deploy(resourcePath, controllerFilePath, watch, timeoutMinutes, sleepTime, kind)
 }
 
-static def scan(Boolean debug = true, Boolean waitScan = false) {
-    return new Sonar().scan(debug, waitScan)
+static def scan(Boolean debug = true, Boolean waitScan = true, Boolean interupt = true) {
+    return new Sonar().scan(debug, waitScan, interupt)
 }
