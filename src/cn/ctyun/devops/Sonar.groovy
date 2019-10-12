@@ -1,10 +1,11 @@
 
 package cn.ctyun.devops
 
-def scan(Boolean debug = true, Boolean waitScan = true) {
+def scan(Boolean debug = true, Boolean waitScan = true, Boolean interupt = false) {
     this.folder = "."
     this.debug = debug
     this.waitScan = waitScan
+    this.interupt = interupt
     return this
 }
 
@@ -18,7 +19,7 @@ def start(install=false) {
     return this
 }
 
-def startToSonar(install=true) {
+def startToSonar(install=false) {
     withSonarQubeEnv('sonarqube') {
         def scannerCLI = "sonar-scanner";
         if (install) {
@@ -45,10 +46,10 @@ def startToSonar(install=true) {
     //wait 3min
     timeout(time: 3, unit: 'MINUTES') {
         def qg = waitForQualityGate()
-        echo "Status first: ${qg.status}"
         if (qg.status != 'Error') {
             echo "Status: ${qg.status}"
             error "Pipeline aborted due to quality gate failure: ${qg.status}"
+            throw "Pipeline aborted due to quality gate failure: ${qg.status}" as Throwable
         }
     }
     return this
