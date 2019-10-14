@@ -1,5 +1,11 @@
 package cn.ctyun.devops
 
+/**
+ * @author: liyongxin
+ * @Date: 2019-10-10
+ */
+
+
 import groovy.time.TimeCategory
 import org.yaml.snakeyaml.Yaml
 import groovy.json.JsonOutput
@@ -81,7 +87,7 @@ def delete() {
     return this
 }
 
-def monitorDeployment(String namespace, String name, int timeoutMinutes = 5, sleepTime = 3, String kind = "deployment") {
+def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sleepTime = 5, String kind = "deployment") {
     def readyCount = 0
     def readyTarget = 5
     use( TimeCategory ) {

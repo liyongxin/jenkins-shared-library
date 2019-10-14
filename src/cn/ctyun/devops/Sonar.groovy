@@ -1,5 +1,10 @@
-
 package cn.ctyun.devops
+
+/**
+ * @author: liyongxin
+ * @Date: 2019-10-10
+ */
+
 
 def scan(Boolean debug = true, Boolean waitScan = true, Boolean interupt = false) {
     this.folder = "."
