@@ -16,6 +16,7 @@ def scan(Boolean debug = true, Boolean waitScan = true, Boolean interupt = false
 
 def start(install=false) {
     try {
+        sh "cat /etc/hosts"
         this.startToSonar(install)
     }
     catch (Exception exc) {
