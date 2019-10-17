@@ -20,17 +20,19 @@ def sendMessage(data, credentialsId, Boolean verbose=false, codes="100:399") {
 //        return
 //    }
     def reqBody = new JsonOutput().toJson(data)
-    def response = httpRequest(
-        httpMode:'POST', url: "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=${accessToken}", 
-        requestBody:reqBody, 
-        validResponseCodes: codes,
-        contentType: "APPLICATION_JSON",
-        quiet: !verbose
-    )
-    def jsonSlurper = new JsonSlurperClassic()
-    def json = jsonSlurper.parseText(response.content)
-    echo "json response: ${json}"
-    return json
+    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+        def response = httpRequest(
+                httpMode:'POST', url: "https://qyapi.weixin.qq.com/cgi-bin/message/send?key=${PASSWORD}",
+                requestBody:reqBody,
+                validResponseCodes: codes,
+                contentType: "APPLICATION_JSON",
+                quiet: !verbose
+        )
+        def jsonSlurper = new JsonSlurperClassic()
+        def json = jsonSlurper.parseText(response.content)
+        echo "json response: ${json}"
+        return json
+    }
 }
 
 def getToken(credentialsId, Boolean verbose=false, codes="100:399") {
