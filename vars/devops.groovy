@@ -7,7 +7,7 @@
 import cn.ctyun.devops.Build
 import cn.ctyun.devops.Deploy
 import cn.ctyun.devops.Sonar
-import cn.ctyun.devops.DingTalk
+import cn.ctyun.devops.WeChat
 
 /**
  * docker image builder
