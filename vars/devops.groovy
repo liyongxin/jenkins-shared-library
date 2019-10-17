@@ -49,13 +49,13 @@ static def scan(Boolean debug = true, Boolean waitScan = true, Boolean interupt 
 
 def notificationSuccess(project, title="", version="", credentialsId="wechatBot") {
     // msg = "查看Jenkins流水线历史记录"
-    msg = "✅ ${title} ✅"
+    msg = "<font color=\\\"info\\\">✅ ${title} ✅</font>"
     // if (version != "") {
     // msg = "version: ${version} --- ${msg}"
     //   msg = "${msg} - version: ${version}"
     // }
     if (title == "") {
-        title = "流水线成功了"
+        title = "<font color=\"info\">流水线成功了</font>"
     } else if (title == "上线啦") {
         msg = "${msg} 🎉🎊🎈"
     }
@@ -72,9 +72,9 @@ def notificationSuccess(project, title="", version="", credentialsId="wechatBot"
 
 def notificationFailed(project, title="", version="", isEnvironment = false, credentialsId="wechatBot") {
     // msg = "查看Jenkins流水线历史记录"
-    msg = "🛑 ${title} 🛑"
+    msg = "<font color=\"warning\">🛑 ${title} 🛑</font>"
     if (title == "") {
-        title = "流水线失败了！"
+        title = "<font color=\"warning\">流水线失败了！</font>"
     }
     title = "${project}：${version}"
     msg = genNotificationMessage(msg, title)

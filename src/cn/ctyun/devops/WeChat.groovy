@@ -22,7 +22,7 @@ def sendMessage(data, credentialsId, Boolean verbose=false, codes="100:399") {
     def reqBody = new JsonOutput().toJson(data)
     withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
         def response = httpRequest(
-                httpMode:'POST', url: "https://qyapi.weixin.qq.com/cgi-bin/message/send?key=${PASSWORD}",
+                httpMode:'POST', url: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${PASSWORD}",
                 requestBody:reqBody,
                 validResponseCodes: codes,
                 contentType: "APPLICATION_JSON",
