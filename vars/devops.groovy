@@ -47,7 +47,7 @@ static def scan(Boolean debug = true, Boolean waitScan = true, Boolean interupt 
     return new Sonar().scan(debug, waitScan, interupt)
 }
 
-def notificationSuccess(project, credentialsId, title="", version="") {
+def notificationSuccess(project, title="", version="", credentialsId="wechatBot") {
     // msg = "查看Jenkins流水线历史记录"
     msg = "✅ ${title} ✅"
     // if (version != "") {
