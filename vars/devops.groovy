@@ -70,6 +70,24 @@ def notificationSuccess(project, title="", version="", credentialsId="wechatBot"
     } catch (Exception ignored) {}
 }
 
+def notificationFailed(project, title="", version="", isEnvironment = false, credentialsId="wechatBot") {
+    // msg = "查看Jenkins流水线历史记录"
+    msg = "🛑 ${title} 🛑"
+    if (title == "") {
+        title = "流水线失败了！"
+    }
+    title = "${project}：${version}"
+    msg = genNotificationMessage(msg, title)
+    def buttons = getButtonLinks(isEnvironment)
+    msg = "${msg}${buttons}"
+    // new Ding().markDown(title, msg, false, credentialsId)
+    try {
+        new WeChat().markDown(credentialsId, msg, true)
+    } catch (Exception ignored) {}
+
+}
+
+
 def genNotificationMessage(msg, title="") {
     if (title != "") {
         msg = "### ${title}  \n  ${msg}"
