@@ -62,7 +62,7 @@ def notificationSuccess(project, title="", version="", credentialsId="wechatBot"
     title = "${project}：${version}"
 
     msg = genNotificationMessage(msg, title)
-    def buttons = getButtonLinks()
+    def buttons = getButtonLinks(project)
     msg = "${msg}${buttons}"
     // new Ding().markDown(title, msg, false, credentialsId)
     try {
@@ -70,7 +70,7 @@ def notificationSuccess(project, title="", version="", credentialsId="wechatBot"
     } catch (Exception ignored) {}
 }
 
-def notificationFailed(project, title="", version="", isEnvironment = false, credentialsId="wechatBot") {
+def notificationFailed(project, title="", version="",  credentialsId="wechatBot") {
     // msg = "查看Jenkins流水线历史记录"
     msg = "<font color=\"warning\">🛑 ${title} 🛑</font>"
     if (title == "") {
@@ -78,7 +78,7 @@ def notificationFailed(project, title="", version="", isEnvironment = false, cre
     }
     title = "${project}：${version}"
     msg = genNotificationMessage(msg, title)
-    def buttons = getButtonLinks(isEnvironment)
+    def buttons = getButtonLinks(project)
     msg = "${msg}${buttons}"
     // new Ding().markDown(title, msg, false, credentialsId)
     try {
@@ -86,7 +86,6 @@ def notificationFailed(project, title="", version="", isEnvironment = false, cre
     } catch (Exception ignored) {}
 
 }
-
 
 def genNotificationMessage(msg, title="") {
     if (title != "") {
@@ -135,11 +134,15 @@ def genNotificationMessage(msg, title="") {
     return msg
 }
 
-def genButtons(isEnvironment=false) {
+def genButtons(project="") {
     buttons = [
             [
                     "title": "查看流水线",
                     "actionURL": "${env.BUILD_URL}"
+            ],
+            [
+                    "title": "查看代码扫描",
+                    "actionURL": "http://sonar-test.ctyuncdn.cn/dashboard?id=${project}"
             ]
     ]
     if (env.CHANGE_URL != null && env.CHANGE_URL != "") {
@@ -148,18 +151,12 @@ def genButtons(isEnvironment=false) {
                 "actionURL": "${env.CHANGE_URL}"
         ])
     }
-    if (isEnvironment) {
-        buttons.add([
-                "title": "环境配置",
-                "actionURL": "http://confluence.alaudatech.com/pages/viewpage.action?pageId=23388567"
-        ])
-    }
     return buttons
 }
 
-def getButtonLinks(isEnvironment=false) {
+def getButtonLinks(project="") {
     def msg = ""
-    def listT = genButtons(isEnvironment)
+    def listT = genButtons(project)
     listT.each() {
         if (msg == "") {
             msg = "  \n > "
