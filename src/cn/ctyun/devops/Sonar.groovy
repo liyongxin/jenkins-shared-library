@@ -13,7 +13,7 @@ def scan(String projectVersion="", Boolean debug = true, Boolean waitScan = true
     this.interupt = interupt
     if (projectVersion == ""){
         projectVersion = sh(returnStdout: true, script: 'git log --oneline -n 1|cut -d " " -f 1')
-        sh "echo 'sonar.projectVersion=${projectVersion}' >> sonar-project.properties"
+        sh "echo '\nsonar.projectVersion=${projectVersion}' >> sonar-project.properties"
         sh "cat sonar-project.properties"
     }
     this.projectVersion = projectVersion
