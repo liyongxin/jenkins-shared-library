@@ -64,6 +64,9 @@ def startToSonar(install=false) {
             def qg = waitForQualityGate()
             if (qg.status != 'OK') {
                 error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                updateGitlabCommitStatus(name: 'SonarQube analysis', state: 'failed')
+            }else{
+                updateGitlabCommitStatus(name: 'SonarQube analysis', state: 'success')
             }
         }
     }else{
