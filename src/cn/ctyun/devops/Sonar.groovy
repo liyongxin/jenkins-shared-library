@@ -12,7 +12,7 @@ def scan(String projectVersion="", Boolean debug = true, Boolean waitScan = true
     this.waitScan = waitScan
     this.interupt = interupt
     if (projectVersion == ""){
-        projectVersion = sh(returnStdout: true, script: "git log --oneline -n 1|awk '{print $1}' ")
+        projectVersion = sh(returnStdout: true, script: 'git log --oneline -n 1|cut -d " " -f 1')
     }
     this.projectVersion = projectVersion
     sh "echo ${this.projectVersion}"
