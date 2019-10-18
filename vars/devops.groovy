@@ -38,13 +38,14 @@ static def deploy(String resourcePath, String controllerFilePath, Boolean watch 
 
 /**
  * code scan with sonarqube
+ * @param projectVersion, projectVersion for sonarqube
  * @param debug, if scan with param -X
  * @param waitScan, weather wait for code scan done
  * @param interupt, weather interupt pipeline if code scan Quality Gate result is not OK
  * @return
  */
-static def scan(Boolean debug = true, Boolean waitScan = true, Boolean interupt = true) {
-    return new Sonar().scan(debug, waitScan, interupt)
+static def scan(String projectVersion="", Boolean debug = true, Boolean waitScan = true, Boolean interupt = true) {
+    return new Sonar().scan(projectVersion, debug, waitScan, interupt)
 }
 
 def notificationSuccess(project, title="", version="", credentialsId="wechatBot") {

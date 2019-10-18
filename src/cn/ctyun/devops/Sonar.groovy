@@ -6,11 +6,16 @@ package cn.ctyun.devops
  */
 
 
-def scan(Boolean debug = true, Boolean waitScan = true, Boolean interupt = false) {
+def scan(String projectVersion="", Boolean debug = true, Boolean waitScan = true, Boolean interupt = false) {
     this.folder = "."
     this.debug = debug
     this.waitScan = waitScan
     this.interupt = interupt
+    if (projectVersion == ""){
+        projectVersion = sh(returnStdout: true, script: "git log --oneline -n 1|awk '{print $1}' ")
+    }
+    this.projectVersion = projectVersion
+    sh "echo ${this.projectVersion}"
     return this
 }
 
