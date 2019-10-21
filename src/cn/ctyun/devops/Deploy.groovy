@@ -59,7 +59,7 @@ def initK8sPropertities() {
 
 def start() {
     try {
-        sh "sed -i 's/\${image_tag}/${this.imageTag}/g' ${this.resourcePath}/*"
+        sh "sed -i 's/{{imageTag}}/${this.imageTag}/g' ${this.resourcePath}/*"
         sh "kubectl apply -f ${this.resourcePath}"
     } catch (Exception exc) {
         echo "failed to deploy,exception: ${exc}."
