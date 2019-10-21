@@ -98,6 +98,7 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sle
             if (new Date() >= endTime) {
                 echo "timeout, printing logs..."
                 this.printContainerLogs(lastRolling)
+                updateGitlabCommitStatus(name: 'deploy', state: 'failed')
                 throw new Exception("deployment timed out...")
             }
             // checking deployment status
@@ -109,6 +110,7 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sle
                     readyCount++
                     echo "ready total count: ${readyCount}"
                     if (readyCount >= readyTarget) {
+                        updateGitlabCommitStatus(name: 'deploy', state: 'success')
                         break
                     }
 
@@ -119,6 +121,7 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sle
                 }
             } catch (Exception exc) {
                 echo "error: ${exc}"
+                updateGitlabCommitStatus(name: 'deploy', state: 'failed')
             }
             sleep(sleepTime)
         }

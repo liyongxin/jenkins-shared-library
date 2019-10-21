@@ -52,6 +52,7 @@ def start(pullFirst=false) {
     retry(3) {
         sh "docker build -t ${FULL_ADDRESS} -f ${this.dockerfile} ${this.args} ${this.context}"
     }
+    updateGitlabCommitStatus(name: 'docker-build', state: 'success')
     return this
 }
 
@@ -74,6 +75,7 @@ def push(String tag = "") {
     retry(3) {
         sh "docker push ${FULL_ADDRESS}"
     }
+    updateGitlabCommitStatus(name: 'docker-push', state: 'success')
     return this
 }
 
