@@ -81,7 +81,7 @@ def start() {
 
 def delete() {
     try {
-        sh "sed -i 's/\${image_tag}/${this.imageTag}/g' ${this.resourcePath}/*"
+        sh "sed -i 's/{{imageTag}}/${this.imageTag}/g' ${this.resourcePath}/*"
         sh "kubectl delete -f ${this.resourcePath}"
     } catch (Exception exc) {
         echo "failed to delete resource,exception: ${exc}."
