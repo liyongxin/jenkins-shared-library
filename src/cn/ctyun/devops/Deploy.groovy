@@ -21,7 +21,7 @@ import groovy.json.JsonSlurperClassic
  * @param kind
  * @return
  */
-def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/depoly.yaml", Boolean watch = true, int timeoutMinutes = 3, int sleepTime = 5, String kind = "deployment") {
+def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/depoly.yaml",String imageTag,  Boolean watch = true, int timeoutMinutes = 3, int sleepTime = 5, String kind = "deployment") {
     this.controllerFilePath = controllerFilePath
     this.resourcePath = resourcePath
     if (resourcePath == "" && controllerFilePath != "") {
@@ -29,6 +29,7 @@ def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/dep
         this.resourcePath = controllerFilePath
     }
     this.watch = watch
+    this.imageTag = imageTag
     this.timeoutMinutes = timeoutMinutes
     this.sleepTime = sleepTime
     this.kind = kind
@@ -58,6 +59,7 @@ def initK8sPropertities() {
 
 def start() {
     try {
+        sh "sed -i 's/\${image_tag}/${this.imageTag}/g' ${this.resourcePath}/*"
         sh "kubectl apply -f ${this.resourcePath}"
     } catch (Exception exc) {
         echo "failed to deploy,exception: ${exc}."
@@ -79,6 +81,7 @@ def start() {
 
 def delete() {
     try {
+        sh "sed -i 's/\${image_tag}/${this.imageTag}/g' ${this.resourcePath}/*"
         sh "kubectl delete -f ${this.resourcePath}"
     } catch (Exception exc) {
         echo "failed to delete resource,exception: ${exc}."

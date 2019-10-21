@@ -32,8 +32,8 @@ static def dockerBuild(String dockerfile = "Dockerfile", String context = ".", S
  * @param kind, resource controller type, deployment only for now
  * @return
  */
-static def deploy(String resourcePath, String controllerFilePath, Boolean watch = true, int timeoutMinutes = 5, int sleepTime = 5, String kind = "deployment") {
-    return new Deploy().deploy(resourcePath, controllerFilePath, watch, timeoutMinutes, sleepTime, kind)
+static def deploy(String resourcePath, String controllerFilePath, String imageTag, Boolean watch = true, int timeoutMinutes = 5, int sleepTime = 5, String kind = "deployment") {
+    return new Deploy().deploy(resourcePath, controllerFilePath, imageTag, watch, timeoutMinutes, sleepTime, kind)
 }
 
 /**
