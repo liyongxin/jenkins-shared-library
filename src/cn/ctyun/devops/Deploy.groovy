@@ -59,7 +59,7 @@ def initK8sPropertities() {
 
 def start() {
     try {
-        sh "sed -i 's/{{imageUrl}}/${env.IMAGE_REPOSITORY}:${this.imageTag}/g' ${this.resourcePath}/*"
+        sh "sed -i 's#{{imageUrl}}#${env.IMAGE_REPOSITORY}:${this.imageTag}#g' ${this.resourcePath}/*"
         sh "kubectl apply -f ${this.resourcePath}"
     } catch (Exception exc) {
         echo "failed to deploy,exception: ${exc}."
@@ -81,7 +81,7 @@ def start() {
 
 def delete() {
     try {
-        sh "sed -i 's/{{imageUrl}}/${env.IMAGE_REPOSITORY}:${this.imageTag}/g' ${this.resourcePath}/*"
+        sh "sed -i 's#{{imageUrl}}#${env.IMAGE_REPOSITORY}:${this.imageTag}#g' ${this.resourcePath}/*"
         sh "kubectl delete -f ${this.resourcePath}"
     } catch (Exception exc) {
         echo "failed to delete resource,exception: ${exc}."
