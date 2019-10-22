@@ -58,7 +58,10 @@ def start(pullFirst=false) {
 
 def push(String tag = "") {
     if (tag == "") {
-        tag = this.tag
+        tag = sh(returnStdout: true, script: "git tag -l --points-at HEAD")
+        if (tag == "" || !tag){
+            tag = this.tag
+        }
     }
     def FULL_ADDRESS = "${this.address}:${tag}"
     def ORIG_ADDRESS = "${this.address}:${this.tag}"
@@ -73,7 +76,11 @@ def push(String tag = "") {
         sh "docker tag ${ORIG_ADDRESS} ${FULL_ADDRESS}"
     }
     retry(3) {
-        sh "docker push ${FULL_ADDRESS}"
+        sh "docker push ${ORIG_ADDRESS}"
+        if(tag != "" && tag != this.tag){
+            echo "commit with tag ${tag}, will push ${FULL_ADDRESS}"
+            sh "docker push ${FULL_ADDRESS}"
+        }
     }
     updateGitlabCommitStatus(name: 'docker-push', state: 'success')
     return this
