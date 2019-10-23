@@ -30,6 +30,10 @@ def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/dep
     }
     this.watch = watch
     this.imageTag = imageTag
+    def tag = sh(returnStdout: true, script: "git tag -l --points-at HEAD")
+    if (tag != "" && tag) {
+        this.imageTag = tag
+    }
     this.timeoutMinutes = timeoutMinutes
     this.sleepTime = sleepTime
     this.kind = kind
