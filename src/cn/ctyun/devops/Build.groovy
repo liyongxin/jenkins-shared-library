@@ -58,7 +58,7 @@ def start(pullFirst=false) {
 
 def push(String tag = "") {
     if (tag == "") {
-        tag = sh(returnStdout: true, script: "git tag -l --points-at HEAD")
+        tag = env.TAG_NAME || sh(returnStdout: true, script: "git tag -l --points-at HEAD")
         if (tag == "" || !tag){
             tag = this.tag
         }

@@ -29,8 +29,9 @@ def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/dep
         this.resourcePath = controllerFilePath
     }
     this.watch = watch
-    this.imageTag = imageTag
-    def tag = sh(returnStdout: true, script: "git tag -l --points-at HEAD")
+    this.imageTag = imageTag || sh(returnStdout: true, script: "git tag -l --points-at HEAD").split("\n")[0]
+    //def tag = sh(returnStdout: true, script: "git tag -l --points-at HEAD").split("\n")[0]
+    def tag = env.TAG_NAME
     if (tag != "" && tag) {
         this.imageTag = tag
     }
