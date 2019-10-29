@@ -56,12 +56,10 @@ def start(pullFirst=false) {
     return this
 }
 
-def push(String tag = "") {
-    if (tag == "") {
-        tag = env.TAG_NAME || sh(returnStdout: true, script: "git tag -l --points-at HEAD")
-        if (tag == "" || !tag){
-            tag = this.tag
-        }
+def push() {
+    def tag = env.TAG_NAME
+    if (tag == "" || !tag) {
+        tag = this.tag
     }
     def FULL_ADDRESS = "${this.address}:${tag}"
     def ORIG_ADDRESS = "${this.address}:${this.tag}"
