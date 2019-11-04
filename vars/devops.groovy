@@ -131,7 +131,7 @@ def genNotificationMessage(msg, title="") {
     if (env.CHANGE_TARGET != null && env.CHANGE_TARGET != "") {
         msg = "${msg}  \n  **Merge target**: ${env.CHANGE_TARGET}"
     }
-    msg = "${msg}  \\n  **Build Tasks**: ${env.BUILD_RESULT}"
+    msg = "${msg}  \n  **Build Tasks**: ${env.BUILD_RESULT}"
     return msg
 }
 
