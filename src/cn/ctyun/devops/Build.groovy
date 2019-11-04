@@ -42,17 +42,17 @@ def start(pullFirst=false) {
         echo "build args: ${this.args}"
     }
     this.login()
-    if (pullFirst) {
-        try {
+    try {
+        if (pullFirst) {
             sh "docker pull ${FULL_ADDRESS}"
-        } catch (Exception exc) {
-            echo "failed to pull ${exc}. ignoring..."
         }
-    }
-    retry(3) {
         sh "docker build -t ${FULL_ADDRESS} -f ${this.dockerfile} ${this.args} ${this.context}"
+        updateGitlabCommitStatus(name: 'docker-build', state: 'success')
+        env.BUILD_RESULT += "Docker Build OK|"
+    }catch (Exception ignored) {
+        updateGitlabCommitStatus(name: 'docker-build', state: 'failed')
+        env.BUILD_RESULT += "Docker Build Failed|"
     }
-    updateGitlabCommitStatus(name: 'docker-build', state: 'success')
     return this
 }
 
@@ -81,6 +81,7 @@ def push() {
         }
     }
     updateGitlabCommitStatus(name: 'docker-push', state: 'success')
+    env.BUILD_RESULT += "Docker Push OK|"
     return this
 }
 

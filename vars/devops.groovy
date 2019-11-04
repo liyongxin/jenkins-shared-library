@@ -131,7 +131,7 @@ def genNotificationMessage(msg, title="") {
     if (env.CHANGE_TARGET != null && env.CHANGE_TARGET != "") {
         msg = "${msg}  \n  **Merge target**: ${env.CHANGE_TARGET}"
     }
-
+    msg = "${msg}  \\n  **Build Tasks**: ${env.BUILD_RESULT}"
     return msg
 }
 
@@ -139,7 +139,7 @@ def genButtons(project="") {
     buttons = [
             [
                     "title": "查看流水线",
-                    "actionURL": "${env.BUILD_URL}"
+                    "actionURL": "${env.RUN_DISPLAY_URL}"
             ],
             [
                     "title": "查看代码扫描",
@@ -166,3 +166,4 @@ def getButtonLinks(project="") {
     }
     return msg
 }
+
