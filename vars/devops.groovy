@@ -8,6 +8,7 @@ import cn.ctyun.devops.Build
 import cn.ctyun.devops.Deploy
 import cn.ctyun.devops.Sonar
 import cn.ctyun.devops.WeChat
+import cn.ctyun.devops.Utils
 
 /**
  * docker image builder
@@ -167,3 +168,6 @@ def getButtonLinks(project="") {
     return msg
 }
 
+static def updateBuildTasks(String source, String add) {
+    return Utils.updateBuildMessage(source, add)
+}
