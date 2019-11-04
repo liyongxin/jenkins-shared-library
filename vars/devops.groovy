@@ -169,5 +169,5 @@ def getButtonLinks(project="") {
 }
 
 static def updateBuildTasks(String source = "abv", String add) {
-    return Utils.updateBuildMessage(source, add)
+    return new Utils().updateBuildMessage(source, add)
 }
