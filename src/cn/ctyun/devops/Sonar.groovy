@@ -67,7 +67,7 @@ def startToSonar(install=false) {
                 env.BUILD_RESULT += "Code Scan Failed|"
                 updateGitlabCommitStatus(name: 'SonarQube analysis', state: 'failed')
             }else{
-                env.BUILD_RESULT += "Code Scan OK|"
+                env.BUILD_RESULT += "Code Scan OK...  √"
                 updateGitlabCommitStatus(name: 'SonarQube analysis', state: 'success')
             }
         }
