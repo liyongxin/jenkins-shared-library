@@ -5,6 +5,7 @@ package cn.ctyun.devops
  * @Date: 2019-10-14
  */
 
+
 def build(String dockerfile, String context, String address, String tag, String credentialsId) {
     this.dockerfile = dockerfile
     this.context = context
@@ -47,11 +48,11 @@ def start(pullFirst=false) {
             sh "docker pull ${FULL_ADDRESS}"
         }
         sh "docker build -t ${FULL_ADDRESS} -f ${this.dockerfile} ${this.args} ${this.context}"
-        updateGitlabCommitStatus(name: 'docker-build', state: 'success')
-        env.BUILD_RESULT += "Docker Build OK|"
+        updateGitlabCommitStatus(name: 'image-build', state: 'success')
+        new Utils().updateBuildMessage(env.BUILD_RESULT, "Image Build OK...  √")
     }catch (Exception ignored) {
-        updateGitlabCommitStatus(name: 'docker-build', state: 'failed')
-        env.BUILD_RESULT += "Docker Build Failed|"
+        updateGitlabCommitStatus(name: 'image-build', state: 'failed')
+        new Utils().updateBuildMessage(env.BUILD_RESULT, "Image Build OK...  ×")
     }
     return this
 }
@@ -80,8 +81,8 @@ def push() {
             sh "docker push ${FULL_ADDRESS}"
         }
     }
-    updateGitlabCommitStatus(name: 'docker-push', state: 'success')
-    env.BUILD_RESULT += "Docker Push OK|"
+    updateGitlabCommitStatus(name: 'image-push', state: 'success')
+    new Utils().updateBuildMessage(env.BUILD_RESULT, "Image Push OK...  √")
     return this
 }
 

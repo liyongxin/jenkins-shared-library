@@ -119,7 +119,7 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sle
                     echo "ready total count: ${readyCount}"
                     if (readyCount >= readyTarget) {
                         updateGitlabCommitStatus(name: 'deploy', state: 'success')
-                        env.BUILD_RESULT += "Deploy OK|"
+                        new Utils().updateBuildMessage(env.BUILD_RESULT, "Service Deploy OK...  √")
                         break
                     }
 
@@ -131,7 +131,7 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sle
             } catch (Exception exc) {
                 echo "error: ${exc}"
                 updateGitlabCommitStatus(name: 'deploy', state: 'failed')
-                env.BUILD_RESULT += "Deploy Failed|"
+                new Utils().updateBuildMessage(env.BUILD_RESULT, "Service Deploy Failed...  ×")
             }
             sleep(sleepTime)
         }
