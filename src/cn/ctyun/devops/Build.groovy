@@ -52,7 +52,7 @@ def start(pullFirst=false) {
         new Utils().updateBuildMessage(env.BUILD_RESULT, "Image Build OK...  √")
     }catch (Exception ignored) {
         updateGitlabCommitStatus(name: 'image-build', state: 'failed')
-        new Utils().updateBuildMessage(env.BUILD_RESULT, "Image Build OK...  ×")
+        new Utils().updateBuildMessage(env.BUILD_RESULT, "Image Build Failed...  ×")
     }
     return this
 }
