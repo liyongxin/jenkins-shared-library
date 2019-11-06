@@ -129,9 +129,9 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sle
                     sh "kubectl get pod -n ${namespace} -o wide"
                 }
             } catch (Exception exc) {
-                echo "error: ${exc}"
                 updateGitlabCommitStatus(name: 'deploy', state: 'failed')
                 new Utils().updateBuildMessage(env.BUILD_RESULT, "Service Deploy Failed...  ×")
+                echo "error: ${exc}"
             }
             sleep(sleepTime)
         }
