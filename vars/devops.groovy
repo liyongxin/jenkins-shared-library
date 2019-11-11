@@ -153,6 +153,12 @@ def genButtons(project="") {
                 "actionURL": "${env.CHANGE_URL}"
         ])
     }
+    if (env.UNIT_TEST != null && env.UNIT_TEST == 1) {
+        buttons.add([
+                "title": "查看单元测试结果",
+                "actionURL": "${env.BUILD_URL}artifact/artifacts/unit_test.log"
+        ])
+    }
     return buttons
 }
 
