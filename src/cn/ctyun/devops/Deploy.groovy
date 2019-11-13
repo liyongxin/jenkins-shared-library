@@ -107,6 +107,7 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sle
                 echo "timeout, printing logs..."
                 this.printContainerLogs(lastRolling)
                 updateGitlabCommitStatus(name: 'deploy', state: 'failed')
+                new Utils().updateBuildMessage(env.BUILD_RESULT, "Service Deploy Failed...  ×")
                 throw new Exception("deployment timed out...")
             }
             // checking deployment status
