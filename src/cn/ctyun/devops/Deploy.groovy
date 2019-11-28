@@ -41,7 +41,7 @@ def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/dep
     return this
 }
 
-def initK8sPropertities() {
+def initK8sProperities() {
     try {
         def content = readFile this.controllerFilePath
         Yaml parser = new Yaml()
@@ -64,7 +64,7 @@ def initK8sPropertities() {
 
 def start() {
     try {
-        sh "sed -i 's#{{imageUrl}}#${env.IMAGE_REPOSITORY}:${this.imageTag}#g' ${this.resourcePath}/*"
+        this.tplHandler()
         sh "kubectl apply -f ${this.resourcePath}"
     } catch (Exception exc) {
         echo "failed to deploy,exception: ${exc}."
@@ -72,7 +72,7 @@ def start() {
     }
     if (this.watch) {
         echo "begin watch ${this.kind}..."
-        initK8sPropertities()
+        initK8sProperities()
         //monitorDeployment("aa", "vv")
         String namespace = this.controllerNamespace
         String name = this.controllerName
@@ -83,6 +83,44 @@ def start() {
     }
     return this
 }
+
+def tplHandler() {
+    String namespace = "test"
+    if(env.BRANCH_NAME == "master"){
+        namespace = "zcxt-dev"
+    }
+    String nodeLabelKeyTpl = "NODE_LABEL_KEY"
+    String nodeLabelValTpl = "NODE_LABEL_VAL"
+    String ingressBusinessTpl = "INGRESS_BUSINESS"
+    String ingressConsoleTpl = "INGRESS_CONSOLE"
+    String ingressOperateTpl = "INGRESS_OPERATE"
+    def configMapObj = this.getResource(namespace, "cm-zcxt", "configmap")
+    def configData = configMapObj["data"]
+    String nodeLabelKey = configData[nodeLabelKeyTpl]
+    String nodeLabelVal = configData[nodeLabelValTpl]
+    String ingressBusiness = configData[ingressBusinessTpl]
+    String ingressConsole = configData[ingressConsoleTpl]
+    String ingressOperate = configData[ingressOperateTpl]
+    echo "nodeLabelKey is " + nodeLabelKey
+    echo "nodeLabelVal is " + nodeLabelVal
+    echo "ingressBusiness is " + ingressBusiness
+    echo "ingressConsole is " + ingressConsole
+    echo "ingressOperate is " + ingressOperate
+    //namespace
+    sh "sed -i 's#{{NAMESPACE}}#${namespace}#g' ${this.resourcePath}/*"
+    // imageUrl
+    sh "sed -i 's#{{imageUrl}}#${env.IMAGE_REPOSITORY}:${this.imageTag}#g' ${this.resourcePath}/*"
+    //nodeLabel
+    sh "sed -i 's#{{${nodeLabelKeyTpl}}}#${nodeLabelKey}#g' ${this.resourcePath}/*"
+    sh "sed -i 's#{{${nodeLabelValTpl}}}#${nodeLabelVal}#g' ${this.resourcePath}/*"
+
+    //ingress
+    sh "sed -i 's#{{${ingressBusinessTpl}}}#${ingressBusiness}#g' ${this.resourcePath}/*"
+    sh "sed -i 's#{{${ingressConsoleTpl}}}#${ingressConsole}#g' ${this.resourcePath}/*"
+    sh "sed -i 's#{{${ingressOperateTpl}}}#${ingressOperate}#g' ${this.resourcePath}/*"
+
+}
+
 
 def delete() {
     try {
@@ -112,7 +150,7 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sle
             }
             // checking deployment status
             try {
-                def rolling = this.getDeployment(namespace, name, kind)
+                def rolling = this.getResource(namespace, name, kind)
                 lastRolling = rolling
                 if (this.isDeploymentReady(rolling)) {
 
@@ -140,13 +178,14 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sle
     return this
 }
 
-def getDeployment(String namespace = "default", String name, String kind="deployment") {
+def getResource(String namespace = "default", String name, String kind="deployment") {
     sh "kubectl get ${kind} -n ${namespace} ${name} -o json > ${namespace}-${name}-yaml.yml"
     def jsonStr = readFile "${namespace}-${name}-yaml.yml"
     def jsonSlurper = new JsonSlurperClassic()
     def jsonObj = jsonSlurper.parseText(jsonStr)
     return jsonObj
 }
+
 
 def printContainerLogs(deployJson) {
     if (deployJson == null) {
