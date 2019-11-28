@@ -67,6 +67,8 @@ def start() {
         this.tplHandler()
         sh "kubectl apply -f ${this.resourcePath}"
     } catch (Exception exc) {
+        updateGitlabCommitStatus(name: 'deploy', state: 'failed')
+        new Utils().updateBuildMessage(env.BUILD_RESULT, "Service Deploy Failed...  ×")
         echo "failed to deploy,exception: ${exc}."
         throw exc
     }
