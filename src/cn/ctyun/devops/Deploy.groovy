@@ -29,10 +29,11 @@ def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/dep
         this.resourcePath = controllerFilePath
     }
     this.watch = watch
-    this.imageTag = imageTag || sh(returnStdout: true, script: "git tag -l --points-at HEAD").split("\n")[0]
+    this.imageTag = imageTag
     //def tag = sh(returnStdout: true, script: "git tag -l --points-at HEAD").split("\n")[0]
     def tag = env.TAG_NAME
-    if (tag != "" && tag) {
+    if (tag != "" && tag && tag !="true") {
+        echo "env.TAG_NAME is ${tag} "
         this.imageTag = tag
     }
     this.timeoutMinutes = timeoutMinutes
@@ -126,7 +127,7 @@ def tplHandler() {
 
 def delete() {
     try {
-        sh "sed -i 's#{{imageUrl}}#${env.IMAGE_REPOSITORY}:${this.imageTag}#g' ${this.resourcePath}/*"
+        this.tplHandler()
         sh "kubectl delete -f ${this.resourcePath}"
     } catch (Exception exc) {
         echo "failed to delete resource,exception: ${exc}."
