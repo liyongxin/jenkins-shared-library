@@ -65,20 +65,19 @@ def push() {
     def FULL_ADDRESS = "${this.address}:${tag}"
     def ORIG_ADDRESS = "${this.address}:${this.tag}"
     this.login()
-    try {
-        if (tag != this.tag) {
-            sh "docker tag ${ORIG_ADDRESS} ${FULL_ADDRESS}"
-        }
-    } catch (Exception exc) {
-        echo "error: ${exc}.. will try to pull the image..."
-        sh "docker pull ${ORIG_ADDRESS}"
-        sh "docker tag ${ORIG_ADDRESS} ${FULL_ADDRESS}"
-    }
-    retry(3) {
-        sh "docker push ${ORIG_ADDRESS}"
-        if(tag != "" && tag != this.tag){
-            echo "commit with tag ${tag}, will push ${FULL_ADDRESS}"
-            sh "docker push ${FULL_ADDRESS}"
+    retry(5) {
+        try {
+            sh "docker push ${ORIG_ADDRESS}"
+            if(tag != "" && tag != this.tag){
+                sh "docker tag ${ORIG_ADDRESS} ${FULL_ADDRESS}"
+                echo "commit with tag ${tag}, will push ${FULL_ADDRESS}"
+                sh "docker push ${FULL_ADDRESS}"
+            }
+        } catch (Exception exc) {
+            echo "error: ${exc}.. will try to pull the image..."
+            updateGitlabCommitStatus(name: 'image-build', state: 'failed')
+            new Utils().updateBuildMessage(env.BUILD_RESULT, "Image Build Failed...  ×")
+            throw exc
         }
     }
     updateGitlabCommitStatus(name: 'image-push', state: 'success')
@@ -109,8 +108,12 @@ def login() {
     }
     withCredentials([usernamePassword(credentialsId: this.credentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
         def regs = this.getRegistry()
-        retry(3) {
+        try {
             sh "docker login ${regs} -u $USERNAME -p $PASSWORD"
+        } catch (Exception exc) {
+            updateGitlabCommitStatus(name: 'image-build', state: 'failed')
+            new Utils().updateBuildMessage(env.BUILD_RESULT, "Image Build Failed...  ×")
+            throw exc
         }
     }
     this.isLoggedIn = true;

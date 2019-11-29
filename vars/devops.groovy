@@ -49,6 +49,14 @@ static def scan(String projectVersion="", Boolean debug = true, Boolean waitScan
     return new Sonar().scan(projectVersion, debug, waitScan, interupt)
 }
 
+/**
+ *
+ * @param project
+ * @param title
+ * @param version
+ * @param credentialsId
+ * @return
+ */
 def notificationSuccess(project, title="", version="", credentialsId="wechatBot") {
     // msg = "查看Jenkins流水线历史记录"
     msg = "<font color=\\\"info\\\">✅ ${title} ✅</font>"
@@ -72,6 +80,14 @@ def notificationSuccess(project, title="", version="", credentialsId="wechatBot"
     } catch (Exception ignored) {}
 }
 
+/**
+ *
+ * @param project
+ * @param title
+ * @param version
+ * @param credentialsId
+ * @return
+ */
 def notificationFailed(project, title="", version="",  credentialsId="wechatBot") {
     // msg = "查看Jenkins流水线历史记录"
     msg = "<font color=\"warning\">🛑 ${title} 🛑</font>"
