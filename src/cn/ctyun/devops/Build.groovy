@@ -108,12 +108,14 @@ def login() {
     }
     withCredentials([usernamePassword(credentialsId: this.credentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
         def regs = this.getRegistry()
-        try {
-            sh "docker login ${regs} -u $USERNAME -p $PASSWORD"
-        } catch (Exception exc) {
-            updateGitlabCommitStatus(name: 'image-build', state: 'failed')
-            new Utils().updateBuildMessage(env.BUILD_RESULT, "Image Build Failed...  ×")
-            throw exc
+        retry(5) {
+            try {
+                sh "docker login ${regs} -u $USERNAME -p $PASSWORD"
+            } catch (Exception exc) {
+                updateGitlabCommitStatus(name: 'image-build', state: 'failed')
+                new Utils().updateBuildMessage(env.BUILD_RESULT, "Image Build Failed...  ×")
+                throw exc
+            }
         }
     }
     this.isLoggedIn = true;
