@@ -8,6 +8,7 @@ import cn.ctyun.devops.Build
 import cn.ctyun.devops.Deploy
 import cn.ctyun.devops.Sonar
 import cn.ctyun.devops.WeChat
+import cn.ctyun.devops.DingTalk
 import cn.ctyun.devops.Utils
 
 /**
@@ -77,7 +78,7 @@ def notificationSuccess(project, title="", version="", credentialsId="wechatBot"
     // new Ding().markDown(title, msg, false, credentialsId)
     try {
         if (credentialsId == "dingTalk"){
-            new Ding().markDown(title, msg, false, credentialsId)
+            new DingTalk().markDown(title, msg, false, credentialsId)
         }else {
             new WeChat().markDown(credentialsId, msg, true)
         }
@@ -105,7 +106,7 @@ def notificationFailed(project, title="", version="",  credentialsId="wechatBot"
     // new Ding().markDown(title, msg, false, credentialsId)
     try {
         if (credentialsId == "dingTalk"){
-            new Ding().markDown(title, msg, false, credentialsId)
+            new DingTalk().markDown(title, msg, false, credentialsId)
         }else {
             new WeChat().markDown(credentialsId, msg, true)
         }
