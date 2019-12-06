@@ -76,7 +76,11 @@ def notificationSuccess(project, title="", version="", credentialsId="wechatBot"
     msg = "${msg}${buttons}"
     // new Ding().markDown(title, msg, false, credentialsId)
     try {
-        new WeChat().markDown(credentialsId, msg, true)
+        if (credentialsId == "dingTalk"){
+            new Ding().markDown(title, msg, false, credentialsId)
+        }else {
+            new WeChat().markDown(credentialsId, msg, true)
+        }
     } catch (Exception ignored) {}
 }
 
@@ -100,7 +104,11 @@ def notificationFailed(project, title="", version="",  credentialsId="wechatBot"
     msg = "${msg}${buttons}"
     // new Ding().markDown(title, msg, false, credentialsId)
     try {
-        new WeChat().markDown(credentialsId, msg, true)
+        if (credentialsId == "dingTalk"){
+            new Ding().markDown(title, msg, false, credentialsId)
+        }else {
+            new WeChat().markDown(credentialsId, msg, true)
+        }
     } catch (Exception ignored) {}
 
 }

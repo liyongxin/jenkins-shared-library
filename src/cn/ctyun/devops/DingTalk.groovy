@@ -8,7 +8,7 @@ def sendRequest(method, data, botUrlCredentialsId, Boolean verbose=false, codes=
     def reqBody = new JsonOutput().toJson(data)
     withCredentials([usernamePassword(credentialsId: botUrlCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
         def response = httpRequest(
-            httpMode:method, url: "${PASSWORD}", 
+            httpMode:method, url: "https://oapi.dingtalk.com/robot/send?access_token=${PASSWORD}",
             requestBody:reqBody, 
             validResponseCodes: codes,
             contentType: "APPLICATION_JSON",
@@ -66,10 +66,13 @@ def markDown(title, text, isAtAll = false, botUrlCredentialsId, Boolean verbose=
         "msgtype": "markdown",
         "markdown": [
             "title": title,
-            "text": text
+            "text": text + "@13210566100"
         ],
         "at": [
-            "isAtAll": isAtAll
+            "atMobiles": [
+                    "13210566100"
+            ],
+            "isAtAll": false
         ]
     ]
     this.sendRequest("POST", data, botUrlCredentialsId, verbose)
