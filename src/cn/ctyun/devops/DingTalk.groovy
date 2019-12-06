@@ -61,16 +61,20 @@ def actionCard(title, text, buttonText, buttonUrl, botUrlCredentialsId, buttons=
     this.sendRequest("POST", data, botUrlCredentialsId, verbose)
 }
 
-def markDown(title, text, isAtAll = false, botUrlCredentialsId, Boolean verbose=false) {
+def markDown(title, text, isAt = false, botUrlCredentialsId, Boolean verbose=false) {
+    String atAccount = "${env.FAILATACCOUNT}"
+    if (isAt) {
+        atAccount = ""
+    }
     data = [
         "msgtype": "markdown",
         "markdown": [
             "title": title,
-            "text": text + "@${env.FAILATACCOUNT}"
+            "text": text + "@${atAccount}"
         ],
         "at": [
             "atMobiles": [
-                    "${env.FAILATACCOUNT}"
+                    "${atAccount}"
             ],
             "isAtAll": false
         ]

@@ -106,7 +106,7 @@ def notificationFailed(project, title="", version="",  credentialsId="wechatBot"
     // new Ding().markDown(title, msg, false, credentialsId)
     try {
         if (credentialsId == "dingTalk"){
-            new DingTalk().markDown(title, msg, false, credentialsId)
+            new DingTalk().markDown(title, msg, true, credentialsId)
         }else {
             new WeChat().markDown(credentialsId, msg, true)
         }
