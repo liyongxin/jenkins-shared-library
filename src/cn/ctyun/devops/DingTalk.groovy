@@ -66,7 +66,7 @@ def markDown(title, text, isAtAll = false, botUrlCredentialsId, Boolean verbose=
         "msgtype": "markdown",
         "markdown": [
             "title": title,
-            "text": text + "@13210566100"
+            "text": text
         ],
         "at": [
             "atMobiles": [
