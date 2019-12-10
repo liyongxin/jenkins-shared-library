@@ -60,17 +60,18 @@ static def scan(String projectVersion="", Boolean debug = true, Boolean waitScan
  */
 def notificationSuccess(project, title="", version="", credentialsId="wechatBot") {
     // msg = "查看Jenkins流水线历史记录"
-    msg = "<font color=\\\"info\\\">✅ ${title} ✅</font>"
+    //msg = "<font color=\\\"info\\\">✅ ${title} ✅</font>"
+    msg ="<font color=\"info\">😄👍 ${title} ✔😄</font>"
     // if (version != "") {
     // msg = "version: ${version} --- ${msg}"
     //   msg = "${msg} - version: ${version}"
     // }
     if (title == "") {
         title = "<font color=\"info\">流水线成功了</font>"
-    } else if (title == "上线啦") {
-        msg = "${msg} 🎉🎊🎈"
+    } else if (${env.TAG_NAME} != "" && env.TAG_NAME != null) {
+        msg = "🎉🎊🎈 ${project}发布到测试环境成功了"
     }
-    title = "${project}：${version}"
+    title = "${project}:"
 
     msg = genNotificationMessage(msg, title)
     def buttons = getButtonLinks(project)
@@ -95,11 +96,13 @@ def notificationSuccess(project, title="", version="", credentialsId="wechatBot"
  */
 def notificationFailed(project, title="", version="",  credentialsId="wechatBot") {
     // msg = "查看Jenkins流水线历史记录"
-    msg = "<font color=\"warning\">🛑 ${title} 🛑</font>"
+    msg = "<font color=\"warning\">😖❌ ${title} 😖❌</font>"
     if (title == "") {
         title = "<font color=\"warning\">流水线失败了！</font>"
+    }else if (${env.TAG_NAME} != "" && env.TAG_NAME != null) {
+        msg = "😖❌ ${project}发布到测试环境失败了"
     }
-    title = "${project}：${version}"
+    title = "${project}:"
     msg = genNotificationMessage(msg, title)
     def buttons = getButtonLinks(project)
     msg = "${msg}${buttons}"
