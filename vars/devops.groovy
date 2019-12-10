@@ -68,7 +68,7 @@ def notificationSuccess(project, title="", version="", credentialsId="wechatBot"
     // }
     if (title == "") {
         title = "<font color=\"info\">流水线成功了</font>"
-    } else if (${env.TAG_NAME} != "" && env.TAG_NAME != null) {
+    } else if (env.TAG_NAME != "" && env.TAG_NAME != null) {
         msg = "🎉🎊🎈 ${project}发布到测试环境成功了"
     }
     title = "${project}:"
@@ -99,7 +99,7 @@ def notificationFailed(project, title="", version="",  credentialsId="wechatBot"
     msg = "<font color=\"warning\">😖❌ ${title} 😖❌</font>"
     if (title == "") {
         title = "<font color=\"warning\">流水线失败了！</font>"
-    }else if (${env.TAG_NAME} != "" && env.TAG_NAME != null) {
+    }else if (env.TAG_NAME != "" && env.TAG_NAME != null) {
         msg = "😖❌ ${project}发布到测试环境失败了"
     }
     title = "${project}:"
