@@ -62,10 +62,11 @@ def actionCard(title, text, buttonText, buttonUrl, botUrlCredentialsId, buttons=
 }
 
 def markDown(title, text, isAt = false, botUrlCredentialsId, Boolean verbose=false) {
-    String atSymbol = "@"
-    String atAccount = "${env.FAILATACCOUNT}"
+    String atSymbol = ""
+    String atAccount = ""
     if (isAt) {
-        atAccount = ""
+        atAccount = "${env.FAILATACCOUNT}"
+        atSymbol = "@"
     }
     data = [
         "msgtype": "markdown",
