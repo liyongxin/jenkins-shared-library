@@ -191,7 +191,7 @@ def genButtons(project="") {
     if (env.TAG_NAME != "" && env.TAG_NAME != null) {
         buttons.add([
                 "title": "查看验收测试结果",
-                "actionURL": "${env.BUILD_URL}artifact/artifacts/report.html"
+                "actionURL": "${env.ACCEPT_TEST_URL}artifact/artifacts/report.html"
         ])
     }
     return buttons

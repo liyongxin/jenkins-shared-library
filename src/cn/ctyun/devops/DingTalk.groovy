@@ -64,19 +64,22 @@ def actionCard(title, text, buttonText, buttonUrl, botUrlCredentialsId, buttons=
 def markDown(title, text, isAt = false, botUrlCredentialsId, Boolean verbose=false) {
     String atSymbol = ""
     String atAccount = ""
+    String extraAccount = ""
     if (isAt) {
         atAccount = "${env.NOTIFY_ACCOUNT}"
         atSymbol = "@"
+        extraAccount = "17718451950"
     }
     data = [
         "msgtype": "markdown",
         "markdown": [
             "title": title,
-            "text": text + "${atSymbol}${atAccount}"
+            "text": text + "${atSymbol}${atAccount}${atSymbol}${extraAccount}"
         ],
         "at": [
             "atMobiles": [
-                    "${atAccount}"
+                    "${atAccount}",
+                    "${extraAccount}"
             ],
             "isAtAll": false
         ]

@@ -14,13 +14,20 @@ def acceptanceTest(comp="") {
                         ],
                         wait: true,
                         propagate: false
-        echo rf.getResult()
-        echo rf.getId()
+        def result = rf.getResult()
+        def msg = "Acceptance Test... "
+        if (result == "SUCCESS"){
+            msg += "√ success"
+        }else if(result == "UNSTABLE"){
+            msg += "⚠ unstable"
+        }else{
+            msg += "× failure"
+        }
         echo rf.getAbsoluteUrl()
-        new Utils().updateBuildMessage(env.BUILD_RESULT, "Acceptance Test...  √")
+        env.ACCEPT_TEST_URL = echo rf.getAbsoluteUrl()
+        new Utils().updateBuildMessage(env.BUILD_RESULT, msg)
     } catch (Exception exc) {
         echo "trigger  execute Acceptance Testing exception: ${exc}"
-
         new Utils().updateBuildMessage(env.BUILD_RESULT, "Acceptance Test...  ×")
     }
 }
