@@ -12,8 +12,8 @@ def acceptanceTest(comp="") {
                         parameters: [
                             string(name: 'comp', value: comp)
                         ],
-                        wait: true
-                    //propagate: false
+                        wait: true,
+                        propagate: false
         def j1EnvVariables = rf.getBuildVariables();
         echo "j1EnvVariables is:"
         echo j1EnvVariables
