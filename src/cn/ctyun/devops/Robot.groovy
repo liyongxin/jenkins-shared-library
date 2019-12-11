@@ -8,12 +8,15 @@ package cn.ctyun.devops
 def acceptanceTest(comp="") {
     try{
         echo "Trigger to execute Acceptance Testing"
-        build job: 'rf_UI',
-                parameters: [
-                    string(name: 'comp', value: '${comp}')
-                ],
-                wait: true
-        //propagate: false
+        def rf = build job: 'rf_UI',
+                        parameters: [
+                            string(name: 'comp', value: '${comp}')
+                        ],
+                        wait: true
+                    //propagate: false
+        def j1EnvVariables = rf.getBuildVariables();
+        echo "j1EnvVariables is:"
+        echo j1EnvVariables
         new Utils().updateBuildMessage(env.BUILD_RESULT, "Acceptance Test...  √")
     } catch (Exception exc) {
         echo "trigger  execute Acceptance Testing exception: ${exc}"
