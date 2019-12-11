@@ -172,7 +172,7 @@ def genButtons(project="") {
                     "actionURL": "${env.RUN_DISPLAY_URL}"
             ],
             [
-                    "title": "查看代码扫描",
+                    "title": "代码扫描结果",
                     "actionURL": "http://sonar-test.ctyuncdn.cn/dashboard?id=${project}"
             ]
     ]
@@ -184,13 +184,13 @@ def genButtons(project="") {
     }
     if (env.UNIT_TEST != null && env.UNIT_TEST == "true") {
         buttons.add([
-                "title": "查看单元测试结果",
+                "title": "单元测试结果",
                 "actionURL": "${env.BUILD_URL}artifact/artifacts/unit_test.log"
         ])
     }
     if (env.TAG_NAME != "" && env.TAG_NAME != null) {
         buttons.add([
-                "title": "查看验收测试结果",
+                "title": "验收测试结果",
                 "actionURL": "${env.ACCEPT_TEST_URL}artifact/artifacts/report.html"
         ])
     }
