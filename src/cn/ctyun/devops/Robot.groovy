@@ -15,8 +15,8 @@ def acceptanceTest(comp="") {
                         wait: true,
                         propagate: false
         echo rf.getResult()
-        echo rf.number
-        echo rf.absoluteUrl
+        echo rf.getNumber()
+        echo rf.getAbsoluteUrl()
         new Utils().updateBuildMessage(env.BUILD_RESULT, "Acceptance Test...  √")
     } catch (Exception exc) {
         echo "trigger  execute Acceptance Testing exception: ${exc}"
