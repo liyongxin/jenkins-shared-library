@@ -65,7 +65,7 @@ def markDown(title, text, isAt = false, botUrlCredentialsId, Boolean verbose=fal
     String atSymbol = ""
     String atAccount = ""
     if (isAt) {
-        atAccount = "${env.FAILATACCOUNT}"
+        atAccount = "${env.NOTIFY_ACCOUNT}"
         atSymbol = "@"
     }
     data = [

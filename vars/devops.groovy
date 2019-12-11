@@ -9,6 +9,7 @@ import cn.ctyun.devops.Deploy
 import cn.ctyun.devops.Sonar
 import cn.ctyun.devops.WeChat
 import cn.ctyun.devops.DingTalk
+import cn.ctyun.devops.Robot
 import cn.ctyun.devops.Utils
 
 /**
@@ -61,7 +62,7 @@ static def scan(String projectVersion="", Boolean debug = true, Boolean waitScan
 def notificationSuccess(project, title="", version="", credentialsId="wechatBot") {
     // msg = "查看Jenkins流水线历史记录"
     //msg = "<font color=\\\"info\\\">✅ ${title} ✅</font>"
-    msg ="<font color=\"info\">😄👍 ${title} ✔😄</font>"
+    msg ="<font color=\"info\">😄👍 ${title} 👍😄</font>"
     // if (version != "") {
     // msg = "version: ${version} --- ${msg}"
     //   msg = "${msg} - version: ${version}"
@@ -69,7 +70,7 @@ def notificationSuccess(project, title="", version="", credentialsId="wechatBot"
     if (title == "") {
         title = "<font color=\"info\">流水线成功了</font>"
     } else if (env.TAG_NAME != "" && env.TAG_NAME != null) {
-        msg = "🎉🎊🎈 ${project}发布到测试环境成功了"
+        msg = "🎉🎊🎈 ${project}发布到测试环境成功了🎈🎊🎉"
     }
     title = "${project}:"
 
@@ -96,11 +97,11 @@ def notificationSuccess(project, title="", version="", credentialsId="wechatBot"
  */
 def notificationFailed(project, title="", version="",  credentialsId="wechatBot") {
     // msg = "查看Jenkins流水线历史记录"
-    msg = "<font color=\"warning\">😖❌ ${title} 😖❌</font>"
+    msg = "<font color=\"warning\">😖❌ ${title} ❌😖</font>"
     if (title == "") {
-        title = "<font color=\"warning\">流水线失败了！</font>"
+        title = "<font color=\"warning\">流水线失败了,请及时查看！</font>"
     }else if (env.TAG_NAME != "" && env.TAG_NAME != null) {
-        msg = "😖❌ ${project}发布到测试环境失败了"
+        msg = "😖❌ ${project}发布到测试环境失败了❌😖,请及时查看！"
     }
     title = "${project}:"
     msg = genNotificationMessage(msg, title)
@@ -187,6 +188,12 @@ def genButtons(project="") {
                 "actionURL": "${env.BUILD_URL}artifact/artifacts/unit_test.log"
         ])
     }
+    if (env.TAG_NAME != "" && env.TAG_NAME != null) {
+        buttons.add([
+                "title": "查看验收测试结果",
+                "actionURL": "${env.BUILD_URL}artifact/artifacts/report.html"
+        ])
+    }
     return buttons
 }
 
@@ -204,4 +211,8 @@ def getButtonLinks(project="") {
 
 static def updateBuildTasks(String source = "abv", String add) {
     return new Utils().updateBuildMessage(source, add)
+}
+
+def acceptTest(comp=""){
+    new Robot().acceptanceTest(comp)
 }
