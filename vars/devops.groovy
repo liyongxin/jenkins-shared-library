@@ -70,7 +70,7 @@ def notificationSuccess(project, title="", version="", credentialsId="wechatBot"
     if (title == "") {
         title = "<font color=\"info\">流水线成功了</font>"
     } else if (env.TAG_NAME != "" && env.TAG_NAME != null) {
-        msg = "🎉🎊🎈 ${project}发布到测试环境成功了🎈🎊🎉"
+        msg = "🎉🎈 ${project}发布到测试环境成功了🎈🎉"
     }
     title = "${project}:"
 
