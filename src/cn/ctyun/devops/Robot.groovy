@@ -10,7 +10,7 @@ def acceptanceTest(comp="") {
         echo "Trigger to execute Acceptance Testing"
         def rf = build job: 'rf_UI',
                         parameters: [
-                            string(name: 'comp', value: '${comp}')
+                            string(name: 'comp', value: comp)
                         ],
                         wait: true
                     //propagate: false
