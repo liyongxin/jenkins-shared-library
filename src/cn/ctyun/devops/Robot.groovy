@@ -13,7 +13,7 @@ def acceptanceTest(comp="") {
                             string(name: 'comp', value: comp)
                         ],
                         wait: true,
-                        propagate: false
+                        propagate: true
         def result = rf.getResult()
         def msg = "Acceptance Test... "
         if (result == "SUCCESS"){
