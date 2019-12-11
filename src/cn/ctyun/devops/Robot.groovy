@@ -13,7 +13,7 @@ def acceptanceTest(comp="") {
                             string(name: 'comp', value: comp)
                         ],
                         wait: true,
-                        propagate: true
+                        propagate: false
         def result = rf.getResult()
         def msg = "Acceptance Test... "
         if (result == "SUCCESS"){
@@ -24,7 +24,7 @@ def acceptanceTest(comp="") {
             msg += "× failure"
         }
         echo rf.getAbsoluteUrl()
-        env.ACCEPT_TEST_URL = echo rf.getAbsoluteUrl()
+        env.ACCEPT_TEST_URL = rf.getAbsoluteUrl()
         new Utils().updateBuildMessage(env.BUILD_RESULT, msg)
     } catch (Exception exc) {
         echo "trigger  execute Acceptance Testing exception: ${exc}"
