@@ -14,12 +14,13 @@ def acceptanceTest(comp="") {
                         ],
                         wait: true,
                         propagate: false
-        def j1EnvVariables = rf.getBuildVariables();
-        echo "j1EnvVariables is:"
-        echo j1EnvVariables
+        echo rf.getResult()
+        echo rf.number
+        echo rf.absoluteUrl
         new Utils().updateBuildMessage(env.BUILD_RESULT, "Acceptance Test...  √")
     } catch (Exception exc) {
         echo "trigger  execute Acceptance Testing exception: ${exc}"
+
         new Utils().updateBuildMessage(env.BUILD_RESULT, "Acceptance Test...  ×")
     }
 }
