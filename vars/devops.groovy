@@ -218,7 +218,7 @@ def acceptTest(comp=""){
 }
 
 String checkLastCommitPath(String path="") {
-    sh "git log --pretty=format:'' --name-only  -1|grep ${path} > tmpResult.file"
+    sh "git log --pretty=format:\"\" --name-only  -1|grep ${path} > tmpResult.file"
     def tmpResult = readFile "tmpResult.file"
     if (tmpResult != "" && tmpResult != null){
         return "1"
