@@ -216,3 +216,14 @@ static def updateBuildTasks(String source = "abv", String add) {
 def acceptTest(comp=""){
     new Robot().acceptanceTest(comp)
 }
+
+static Boolean def checkLastCommitPath(String path="") {
+    if (path == ""){
+        return false
+    }
+    def val = sh(returnStdout: true, script: "git log --pretty=format:"" --name-only  -1|grep ${path}")
+    if (val != "") {
+        return true
+    }
+    return false
+}
