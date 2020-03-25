@@ -220,7 +220,10 @@ def acceptTest(comp=""){
 String checkLastCommitPath(String path="") {
     sh("git log --pretty=format:\"\" --name-only  -1 > tmpResult.file")
     def tmpResult = readFile "tmpResult.file"
+    echo tmpResult
+    echo tmpResult.indexOf(path)
     if (tmpResult.indexOf(path) > -1){
+        echo "hello"
         return "1"
     }
     return "0"
