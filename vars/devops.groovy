@@ -217,7 +217,7 @@ def acceptTest(comp=""){
     new Robot().acceptanceTest(comp)
 }
 
-static String checkLastCommitPath(String path="") {
+String checkLastCommitPath(String path="") {
     sh "git log --pretty=format:'' --name-only  -1|grep ${path} > tmpResult.file"
     def tmpResult = readFile "tmpResult.file"
     if (tmpResult != "" && tmpResult != null){
