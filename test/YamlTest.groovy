@@ -9,5 +9,6 @@ if( a instanceof Character){
 }
 
 println(a.getClass())
-
-println ("1v12.12" ==~ /v.*/)
+def reg = "v.*"
+def tag_name = "1v123"
+println (tag_name && "1v12.12" ==~ reg)
