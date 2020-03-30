@@ -10,4 +10,4 @@ if( a instanceof Character){
 
 println(a.getClass())
 
-println "v12.12".matches(/v.*/)
+println ("1v12.12" ==~ /v.*/)

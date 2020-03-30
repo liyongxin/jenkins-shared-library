@@ -94,9 +94,9 @@ def tplHandler() {
     if(!env.DEV_BRANCH){
         env.DEV_BRANCH = "master"
     }
-    if(env.BRANCH_NAME == env.DEV_BRANCH){
+    if(env.BRANCH_NAME ==~ env.DEV_BRANCH){
         namespace = "zcxt-dev"
-    }else if(env.BRANCH_NAME.matches(/v.*/)){
+    }else if(!env.BRANCH_NAME.matches(/v.*/)){
         throw new Exception("branch check not pass...")
     }
     String nodeLabelKeyTpl = "NODE_LABEL_KEY"
