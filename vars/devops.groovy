@@ -77,14 +77,18 @@ def notificationSuccess(project, title="", version="", credentialsId="wechatBot"
     msg = genNotificationMessage(msg, title)
     def buttons = getButtonLinks(project)
     msg = "${msg}${buttons}"
-    // new Ding().markDown(title, msg, false, credentialsId)
     try {
+        new DingTalk().markDown(title, msg, false, "dingTalk")
+        new WeChat().markDown("wechatBot", msg, true)
+    } catch (Exception ignored) {}
+    // new Ding().markDown(title, msg, false, credentialsId)
+    /*try {
         if (credentialsId == "dingTalk"){
             new DingTalk().markDown(title, msg, false, credentialsId)
         }else {
             new WeChat().markDown(credentialsId, msg, true)
         }
-    } catch (Exception ignored) {}
+    } catch (Exception ignored) {}*/
 }
 
 /**
