@@ -87,8 +87,6 @@ def start() {
     return this
 }
 
-def 
-
 def tplHandler() {
     String namespace = ""
     // set default branch
