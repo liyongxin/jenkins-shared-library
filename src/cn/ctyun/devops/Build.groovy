@@ -82,6 +82,7 @@ def push() {
     }
     updateGitlabCommitStatus(name: 'image-push', state: 'success')
     new Utils().updateBuildMessage(env.BUILD_RESULT, "Image Push OK...  √")
+    env.FULL_IMAGE_ADDRESS = FULL_ADDRESS
     return this
 }
 
