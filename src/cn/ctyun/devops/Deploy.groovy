@@ -87,6 +87,8 @@ def start() {
     return this
 }
 
+def 
+
 def tplHandler() {
     String namespace = ""
     // set default branch
@@ -106,6 +108,7 @@ def tplHandler() {
     String ingressConsoleTpl = "INGRESS_CONSOLE"
     String ingressOperateTpl = "INGRESS_OPERATE"
     String ingressLogstatsTpl = "INGRESS_BUSINESS_LOGSTATS"
+    String ingressIamTpl = "INGRESS_IAM"
     def configMapObj = this.getResource(namespace, "cm-zcxt", "configmap")
     def configData = configMapObj["data"]
     String nodeLabelKey = configData[nodeLabelKeyTpl]
@@ -114,12 +117,14 @@ def tplHandler() {
     String ingressConsole = configData[ingressConsoleTpl]
     String ingressOperate = configData[ingressOperateTpl]
     String ingressLogstats = configData[ingressLogstatsTpl]
+    String ingressIam = configData[ingressIamTpl]
     echo "nodeLabelKey is " + nodeLabelKey
     echo "nodeLabelVal is " + nodeLabelVal
     echo "ingressBusiness is " + ingressBusiness
     echo "ingressConsole is " + ingressConsole
     echo "ingressOperate is " + ingressOperate
     echo "ingressLogstats is " + ingressLogstats
+    echo "ingressIam is " + ingressIam
     //namespace
     sh "sed -i 's#{{NAMESPACE}}#${namespace}#g' ${this.resourcePath}/*"
     // imageUrl
@@ -133,6 +138,7 @@ def tplHandler() {
     sh "sed -i 's#{{${ingressConsoleTpl}}}#${ingressConsole}#g' ${this.resourcePath}/*"
     sh "sed -i 's#{{${ingressOperateTpl}}}#${ingressOperate}#g' ${this.resourcePath}/*"
     sh "sed -i 's#{{${ingressLogstatsTpl}}}#${ingressLogstats}#g' ${this.resourcePath}/*"
+    sh "sed -i 's#{{${ingressIamTpl}}}#${ingressIam}#g' ${this.resourcePath}/*"
 
 }
 
