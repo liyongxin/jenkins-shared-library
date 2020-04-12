@@ -118,6 +118,7 @@ def tplHandler() {
     ]
     def configMapData = this.getResource(namespace, "cm-zcxt", "configmap")["data"]
     sh "sed -i 's#{{NAMESPACE}}#${namespace}#g' ${targetPath}"
+    sh "sed -i 's#{{imageUrl}}#${env.IMAGE_REPOSITORY}:${this.imageTag}#g' ${targetPath}"
     for (key in tpls){
         def val = configMapData[key]
         echo "key is ${key}, val is ${val}"
