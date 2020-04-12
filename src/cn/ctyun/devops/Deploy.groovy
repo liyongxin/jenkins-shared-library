@@ -28,6 +28,9 @@ def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/dep
         echo "resourcePath param is empty, will use controllerFilePath as deploy target"
         this.resourcePath = controllerFilePath
     }
+    if(!this.resourcePath && !this.controllerFilePath){
+        throw Exception("illegal resource path")
+    }
     this.watch = watch
     this.imageTag = imageTag
     //def tag = sh(returnStdout: true, script: "git tag -l --points-at HEAD").split("\n")[0]
@@ -100,44 +103,26 @@ def tplHandler() {
     }else{
         throw new Exception("branch check not pass...")
     }
-    String nodeLabelKeyTpl = "NODE_LABEL_KEY"
-    String nodeLabelValTpl = "NODE_LABEL_VAL"
-    String ingressBusinessTpl = "INGRESS_BUSINESS"
-    String ingressConsoleTpl = "INGRESS_CONSOLE"
-    String ingressOperateTpl = "INGRESS_OPERATE"
-    String ingressLogstatsTpl = "INGRESS_BUSINESS_LOGSTATS"
-    String ingressIamTpl = "INGRESS_IAM"
-    def configMapObj = this.getResource(namespace, "cm-zcxt", "configmap")
-    def configData = configMapObj["data"]
-    String nodeLabelKey = configData[nodeLabelKeyTpl]
-    String nodeLabelVal = configData[nodeLabelValTpl]
-    String ingressBusiness = configData[ingressBusinessTpl]
-    String ingressConsole = configData[ingressConsoleTpl]
-    String ingressOperate = configData[ingressOperateTpl]
-    String ingressLogstats = configData[ingressLogstatsTpl]
-    String ingressIam = configData[ingressIamTpl]
-    echo "nodeLabelKey is " + nodeLabelKey
-    echo "nodeLabelVal is " + nodeLabelVal
-    echo "ingressBusiness is " + ingressBusiness
-    echo "ingressConsole is " + ingressConsole
-    echo "ingressOperate is " + ingressOperate
-    echo "ingressLogstats is " + ingressLogstats
-    echo "ingressIam is " + ingressIam
-    //namespace
-    sh "sed -i 's#{{NAMESPACE}}#${namespace}#g' ${this.resourcePath}/*"
-    // imageUrl
-    sh "sed -i 's#{{imageUrl}}#${env.IMAGE_REPOSITORY}:${this.imageTag}#g' ${this.resourcePath}/*"
-    //nodeLabel
-    sh "sed -i 's#{{${nodeLabelKeyTpl}}}#${nodeLabelKey}#g' ${this.resourcePath}/*"
-    sh "sed -i 's#{{${nodeLabelValTpl}}}#${nodeLabelVal}#g' ${this.resourcePath}/*"
-
-    //ingress
-    sh "sed -i 's#{{${ingressBusinessTpl}}}#${ingressBusiness}#g' ${this.resourcePath}/*"
-    sh "sed -i 's#{{${ingressConsoleTpl}}}#${ingressConsole}#g' ${this.resourcePath}/*"
-    sh "sed -i 's#{{${ingressOperateTpl}}}#${ingressOperate}#g' ${this.resourcePath}/*"
-    sh "sed -i 's#{{${ingressLogstatsTpl}}}#${ingressLogstats}#g' ${this.resourcePath}/*"
-    sh "sed -i 's#{{${ingressIamTpl}}}#${ingressIam}#g' ${this.resourcePath}/*"
-
+    def targetPath = "${this.resourcePath}/*"
+    if(this.resourcePath == this.controllerFilePath){
+        targetPath = this.controllerFilePath
+    }
+    def tpls = [
+        "NODE_LABEL_KEY",
+        "NODE_LABEL_VAL",
+        "INGRESS_BUSINESS",
+        "INGRESS_CONSOLE",
+        "INGRESS_OPERATE",
+        "INGRESS_BUSINESS_LOGSTATS",
+        "INGRESS_IAM"
+    ]
+    def configMapData = this.getResource(namespace, "cm-zcxt", "configmap")["data"]
+    sh "sed -i 's#{{NAMESPACE}}#${namespace}#g' ${targetPath}"
+    for (key in tpls){
+        def val = configMapData[key]
+        echo "key is ${key}, val is ${val}"
+        sh "sed -i 's#{{${key}}}#${val}#g' ${targetPath}"
+    }
 }
 
 
