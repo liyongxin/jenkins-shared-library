@@ -114,7 +114,8 @@ def tplHandler() {
         "INGRESS_CONSOLE",
         "INGRESS_OPERATE",
         "INGRESS_BUSINESS_LOGSTATS",
-        "INGRESS_IAM"
+        "INGRESS_IAM",
+        "INGRESS_CDN_CLIENT_CONSOLE"
     ]
     def configMapData = this.getResource(namespace, "cm-zcxt", "configmap")["data"]
     sh "sed -i 's#{{NAMESPACE}}#${namespace}#g' ${targetPath}"
