@@ -14,7 +14,7 @@ package com.luffycity.devops;
  * @param credentialsId, jenkins credential id for docker registry loggin
  * @param args, build args
  * */
-def Build(String dockerfile, String context, String address, String tag, String credentialsId, String args="") {
+def build(String dockerfile, String context, String address, String tag, String credentialsId, String args="") {
     this.dockerfile = dockerfile
     this.context = context
     this.address = address

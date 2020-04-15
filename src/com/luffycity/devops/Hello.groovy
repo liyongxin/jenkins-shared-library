@@ -9,7 +9,7 @@ package com.luffycity.devops
 /**
  * @param content: what you want to show
  */
-def Hello(String content) {
+def hello(String content) {
     this.content = content
     return this
 }
