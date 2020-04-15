@@ -62,6 +62,6 @@ def notification(project, title="", version="", credentialsId="") {
 /**
  * for demo
  */
-static def hello(String content) {
+def hello(String content) {
     return new Hello().hello(content)
 }
