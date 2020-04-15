@@ -36,7 +36,7 @@ def dockerBuild(String dockerfile, String context, String address, String tag, S
  * @return
  */
 static def deploySpec(String resourcePath, String controllerFilePath, Boolean watch = true, int timeoutMinutes = 5, int sleepTime = 5, String kind = "deployment") {
-    return new Deploy().deploy(resourcePath, controllerFilePath, watch, timeoutMinutes, sleepTime, kind)
+    return new DeploySpec().deploy(resourcePath, controllerFilePath, watch, timeoutMinutes, sleepTime, kind)
 }
 
 /**
