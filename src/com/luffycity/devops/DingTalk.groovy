@@ -8,20 +8,18 @@ def markDown(title, text, isAt = false, botUrlCredentialsId, Boolean verbose=fal
     String atAccount = ""
     String extraAccount = ""
     if (isAt) {
-        atAccount = "${env.NOTIFY_ACCOUNT}"
+        atAccount = "${env.NOTIFY_ACCOUNT}" or "luffy"
         atSymbol = "@"
-        extraAccount = "132xxxxxxx"
     }
     data = [
         "msgtype": "markdown",
         "markdown": [
             "title": title,
-            "text": text + "${atSymbol}${atAccount}${atSymbol}${extraAccount}"
+            "text": text + "${atSymbol}${atAccount}"
         ],
         "at": [
             "atMobiles": [
-                    "${atAccount}",
-                    "${extraAccount}"
+                    "${atAccount}"
             ],
             "isAtAll": false
         ]
