@@ -31,6 +31,8 @@ def markDown(title, text, isAt = false, botUrlCredentialsId, Boolean verbose=fal
 
 def sendRequest(method, data, botUrlCredentialsId, Boolean verbose=false, codes="100:399") {
     def reqBody = new JsonOutput().toJson(data)
+    echo "123"
+    echo reqBody
     withCredentials([usernamePassword(credentialsId: botUrlCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
         httpRequest(
             httpMode:method, url: "https://oapi.dingtalk.com/robot/send?access_token=${PASSWORD}",
