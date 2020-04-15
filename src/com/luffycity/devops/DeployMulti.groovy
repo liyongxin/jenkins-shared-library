@@ -94,10 +94,10 @@ def tplHandler() {
     String namespace = ""
     // set default branch
     if(!env.DEV_BRANCH){
-        env.DEV_BRANCH = "master"
+        env.DEV_BRANCH = "develop"
     }
     if(env.BRANCH_NAME ==~ env.DEV_BRANCH){
-        namespace = "dev"
+        namespace = "demo"
     }else if(env.TAG_NAME && env.BRANCH_NAME.matches(/v.*/)){
         namespace = "qa"
     }else{
@@ -120,7 +120,7 @@ def tplHandler() {
         "NODE_LABEL_VAL",
         "INGRESS_MYBLOG"
     ]
-    def configMapData = this.getResource(namespace, "env-configs", "configmap")["data"]
+    def configMapData = this.getResource(namespace, "myblog", "configmap")["data"]
    
     for (key in tpls){
         def val = configMapData[key]
