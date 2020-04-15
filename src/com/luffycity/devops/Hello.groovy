@@ -16,8 +16,10 @@ def hello(String content) {
 
 def sayHi() {
     echo 'Hi, ${this.content}'
+    return this
 }
 
 def sayBye() {
     echo 'fuck off, get away of my side!'
+    return this
 }
