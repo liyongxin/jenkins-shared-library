@@ -71,7 +71,7 @@ static def updateBuildTasks(String source = "", String add) {
  * @return Notification object
  */
 def notification(project, title="", version="", credentialsId="") {
-    return new Notification(project, title, version, credentialsId)
+    return new Notification().notification(project, title, version, credentialsId)
 }
 
 /**

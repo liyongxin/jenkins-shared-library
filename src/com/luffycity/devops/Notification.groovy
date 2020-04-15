@@ -10,7 +10,7 @@ package com.luffycity.devops
  * @param credentialsId
  * @return
  */
-def Notification(project, title="", version="", credentialsId=""){
+def notification(project, title="", version="", credentialsId=""){
     this.project = project
     this.title = title
     this.version = version
