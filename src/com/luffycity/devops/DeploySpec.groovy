@@ -95,8 +95,8 @@ def tplHandler() {
     if(this.resourcePath == this.controllerFilePath){
         targetPath = this.controllerFilePath
     }
-    //replace IMAGE_REPO
-    sh "sed -i 's#{{IMAGE_REPO}}#${env.FULL_IMAGE_ADDRESS}#g' ${targetPath}"
+    //replace IMAGE_URL
+    sh "sed -i 's#{{IMAGE_URL}}#${env.FULL_IMAGE_ADDRESS}#g' ${targetPath}"
 }
 
 
