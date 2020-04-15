@@ -54,8 +54,8 @@ def start() {
     }
     // watch workload
     if (this.watch) {
-        echo "begin watch ${this.kind}... ${this.controllerName}"
         initK8sProperities()
+        echo "begin watch ${this.kind}... ${this.controllerName}"
         String namespace = this.controllerNamespace
         String name = this.controllerName
         int timeoutMinutes = this.timeoutMinutes
