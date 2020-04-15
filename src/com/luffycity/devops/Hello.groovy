@@ -15,7 +15,7 @@ def hello(String content) {
 }
 
 def sayHi() {
-    echo 'Hi, ${this.content}'
+    echo "Hi, ${this.content}"
     return this
 }
 
