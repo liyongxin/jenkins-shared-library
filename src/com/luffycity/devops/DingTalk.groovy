@@ -36,7 +36,7 @@ def sendRequest(method, data, botUrlCredentialsId, Boolean verbose=false, codes=
     withCredentials([usernamePassword(credentialsId: botUrlCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
         httpRequest(
             httpMode:method, url: "https://oapi.dingtalk.com/robot/send?access_token=${PASSWORD}",
-            requestBody:reqBody, 
+            requestBody:reqBody,
             validResponseCodes: codes,
             contentType: "APPLICATION_JSON",
             quiet: !verbose

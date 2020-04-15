@@ -112,7 +112,7 @@ def genButtons(project="") {
             ],
             [
                     "title": "代码扫描结果",
-                    "actionURL": "http://sonar.devops.cn/dashboard?id=${project}"
+                    "actionURL": "http://sonar.qq.com/dashboard?id=${project}"
             ]
     ]
     if (env.TAG_NAME != "" && env.TAG_NAME != null) {
