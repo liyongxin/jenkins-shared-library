@@ -6,7 +6,8 @@
 
 import com.luffycity.devops.Hello
 import com.luffycity.devops.Build
-import com.luffycity.devops.Deploy
+import com.luffycity.devops.DeploySpec
+import com.luffycity.devops.DeployMulti
 import com.luffycity.devops.Notification
 import com.luffycity.devops.Utils
 
@@ -34,8 +35,22 @@ def dockerBuild(String dockerfile, String context, String address, String tag, S
  * @param kind, resource controller type, deployment only for now
  * @return
  */
-static def deploy(String resourcePath, String controllerFilePath, Boolean watch = true, int timeoutMinutes = 5, int sleepTime = 5, String kind = "deployment") {
+static def deploySpec(String resourcePath, String controllerFilePath, Boolean watch = true, int timeoutMinutes = 5, int sleepTime = 5, String kind = "deployment") {
     return new Deploy().deploy(resourcePath, controllerFilePath, watch, timeoutMinutes, sleepTime, kind)
+}
+
+/**
+ * kubernetes deployer
+ * @param resourcePath, path of deployment|ingress|service|configmap...
+ * @param controllerFilePath, path of deployment
+ * @param watch, weather watch controller resource creation
+ * @param timeoutMinutes, totalTime for pod creation ready
+ * @param sleepTime, time interval for watch pod creation
+ * @param kind, resource controller type, deployment only for now
+ * @return
+ */
+static def deployMulti(String resourcePath, String controllerFilePath, Boolean watch = true, int timeoutMinutes = 5, int sleepTime = 5, String kind = "deployment") {
+    return new DeployMulti().deploy(resourcePath, controllerFilePath, watch, timeoutMinutes, sleepTime, kind)
 }
 
 /**
