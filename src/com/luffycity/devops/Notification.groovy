@@ -87,7 +87,7 @@ def genNotificationMessage(msg, title="") {
     if (gitbranch != null && gitbranch != "") {
         msg = "${msg}  \n  **Git branch**: ${gitbranch}"
     }
-    msg = "${msg}  \n  **Build Tasks**: ${env.BUILD_RESULT}"
+    msg = "${msg}  \n  **Build Tasks**: ${env.BUILD_TASKS}"
     return msg
 }
 

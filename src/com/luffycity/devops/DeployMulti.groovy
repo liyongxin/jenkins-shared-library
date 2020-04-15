@@ -48,7 +48,7 @@ def start() {
         sh "kubectl apply -f ${this.resourcePath}"
     } catch (Exception exc) {
         updateGitlabCommitStatus(name: 'deploy', state: 'failed')
-        this.util.updateBuildMessage(env.BUILD_RESULT, "Service Deploy Failed...  ×")
+        this.util.updateBuildMessage(env.BUILD_TASKS, "Service Deploy Failed...  ×")
         echo "failed to deploy,exception: ${exc}."
         throw exc
     }
@@ -153,7 +153,7 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sle
                 echo "timeout, printing logs..."
                 this.printContainerLogs(lastRolling)
                 updateGitlabCommitStatus(name: 'deploy', state: 'failed')
-                this.util.updateBuildMessage(env.BUILD_RESULT, "Service Deploy Failed...  ×")
+                this.util.updateBuildMessage(env.BUILD_TASKS, "Service Deploy Failed...  ×")
                 throw new Exception("deployment timed out...")
             }
             // checking deployment status
@@ -166,7 +166,7 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sle
                     echo "ready total count: ${readyCount}"
                     if (readyCount >= readyTarget) {
                         updateGitlabCommitStatus(name: 'deploy', state: 'success')
-                        this.util.updateBuildMessage(env.BUILD_RESULT, "Service Deploy OK...  √")
+                        this.util.updateBuildMessage(env.BUILD_TASKS, "Service Deploy OK...  √")
                         break
                     }
 
@@ -176,7 +176,7 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sle
                 }
             } catch (Exception exc) {
                 updateGitlabCommitStatus(name: 'deploy', state: 'failed')
-                this.util.updateBuildMessage(env.BUILD_RESULT, "Service Deploy Failed...  ×")
+                this.util.updateBuildMessage(env.BUILD_TASKS, "Service Deploy Failed...  ×")
                 echo "error: ${exc}"
             }
             sleep(sleepTime)
