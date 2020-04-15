@@ -1,14 +1,13 @@
-package cn.ctyun.devops
+package com.luffycity.devops
 
 /**
- * @author: liyongxin
- * @Date: 2019-10-10
+ * @author: YongxinLi
+ * @mail: inspur_lyx@hotmail.com
+ * @Date: 2020-04-13
  */
-
 
 import groovy.time.TimeCategory
 import org.yaml.snakeyaml.Yaml
-import groovy.json.JsonOutput
 import groovy.json.JsonSlurperClassic
 
 /**
@@ -21,7 +20,7 @@ import groovy.json.JsonSlurperClassic
  * @param kind
  * @return
  */
-def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/depoly.yaml",String imageTag,  Boolean watch = true, int timeoutMinutes = 3, int sleepTime = 5, String kind = "deployment") {
+def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/depoly.yaml",  Boolean watch = true, int timeoutMinutes = 3, int sleepTime = 5, String kind = "deployment") {
     this.controllerFilePath = controllerFilePath
     this.resourcePath = resourcePath
     if (resourcePath == "" && controllerFilePath != "") {
@@ -32,18 +31,41 @@ def deploy(String resourcePath="deploy", String controllerFilePath = "deploy/dep
         throw Exception("illegal resource path")
     }
     this.watch = watch
-    this.imageTag = imageTag
-    //def tag = sh(returnStdout: true, script: "git tag -l --points-at HEAD").split("\n")[0]
-    def tag = env.TAG_NAME
-    if (tag != "" && tag && tag !="true") {
-        echo "env.TAG_NAME is ${tag} "
-        this.imageTag = tag
+    if (env.TAG_NAME) {
+        this.imageTag = env.TAG_NAME
     }
     this.timeoutMinutes = timeoutMinutes
     this.sleepTime = sleepTime
     this.kind = kind
+    this.util = new Utils()
     return this
 }
+
+
+def start() {
+    try {
+        this.tplHandler()
+        sh "kubectl apply -f ${this.resourcePath}"
+    } catch (Exception exc) {
+        updateGitlabCommitStatus(name: 'deploy', state: 'failed')
+        this.util.updateBuildMessage(env.BUILD_RESULT, "Service Deploy Failed...  ×")
+        echo "failed to deploy,exception: ${exc}."
+        throw exc
+    }
+    // watch workload
+    if (this.watch) {
+        echo "begin watch ${this.kind}... ${this.controllerName}"
+        initK8sProperities()
+        String namespace = this.controllerNamespace
+        String name = this.controllerName
+        int timeoutMinutes = this.timeoutMinutes
+        int sleepTime = this.sleepTime
+        String kind = this.kind
+        monitorDeployment(namespace, name, timeoutMinutes, sleepTime, kind)
+    }
+    return this
+}
+
 
 def initK8sProperities() {
     try {
@@ -56,7 +78,7 @@ def initK8sProperities() {
         }
         echo "${data}"
         this.controllerNamespace = data["metadata"]["namespace"]
-        if (null == this.controllerNamespace || "" == this.controllerNamespace){
+        if (!this.controllerNamespace){
             this.controllerNamespace = "default"
         }
         this.controllerName = data["metadata"]["name"]
@@ -66,29 +88,7 @@ def initK8sProperities() {
     }
 }
 
-def start() {
-    try {
-        this.tplHandler()
-        sh "kubectl apply -f ${this.resourcePath}"
-    } catch (Exception exc) {
-        updateGitlabCommitStatus(name: 'deploy', state: 'failed')
-        new Utils().updateBuildMessage(env.BUILD_RESULT, "Service Deploy Failed...  ×")
-        echo "failed to deploy,exception: ${exc}."
-        throw exc
-    }
-    if (this.watch) {
-        echo "begin watch ${this.kind}..."
-        initK8sProperities()
-        //monitorDeployment("aa", "vv")
-        String namespace = this.controllerNamespace
-        String name = this.controllerName
-        int timeoutMinutes = this.timeoutMinutes
-        int sleepTime = this.sleepTime
-        String kind = this.kind
-        monitorDeployment(namespace, name, timeoutMinutes, sleepTime, kind)
-    }
-    return this
-}
+
 
 def tplHandler() {
     String namespace = ""
@@ -97,9 +97,9 @@ def tplHandler() {
         env.DEV_BRANCH = "master"
     }
     if(env.BRANCH_NAME ==~ env.DEV_BRANCH){
-        namespace = "zcxt-dev"
+        namespace = "dev"
     }else if(env.TAG_NAME && env.BRANCH_NAME.matches(/v.*/)){
-        namespace = "test"
+        namespace = "qa"
     }else{
         throw new Exception("branch check not pass...")
     }
@@ -107,19 +107,21 @@ def tplHandler() {
     if(this.resourcePath == this.controllerFilePath){
         targetPath = this.controllerFilePath
     }
+    //replace IMAGE_REPO
+    sh "sed -i 's#{{IMAGE_REPO}}#${env.FULL_IMAGE_ADDRESS}#g' ${targetPath}"
+
+    
+    //namespace replace
+     sh "sed -i 's#{{NAMESPACE}}#${namespace}#g' ${targetPath}"
+    
+    // other tpls replace
     def tpls = [
         "NODE_LABEL_KEY",
         "NODE_LABEL_VAL",
-        "INGRESS_BUSINESS",
-        "INGRESS_CONSOLE",
-        "INGRESS_OPERATE",
-        "INGRESS_BUSINESS_LOGSTATS",
-        "INGRESS_IAM",
-        "INGRESS_CDN_CLIENT_CONSOLE"
+        "INGRESS_MYBLOG"
     ]
-    def configMapData = this.getResource(namespace, "cm-zcxt", "configmap")["data"]
-    sh "sed -i 's#{{NAMESPACE}}#${namespace}#g' ${targetPath}"
-    sh "sed -i 's#{{imageUrl}}#${env.FULL_IMAGE_ADDRESS}#g' ${targetPath}"
+    def configMapData = this.getResource(namespace, "env-configs", "configmap")["data"]
+   
     for (key in tpls){
         def val = configMapData[key]
         echo "key is ${key}, val is ${val}"
@@ -151,31 +153,30 @@ def monitorDeployment(String namespace, String name, int timeoutMinutes = 3, sle
                 echo "timeout, printing logs..."
                 this.printContainerLogs(lastRolling)
                 updateGitlabCommitStatus(name: 'deploy', state: 'failed')
-                new Utils().updateBuildMessage(env.BUILD_RESULT, "Service Deploy Failed...  ×")
+                this.util.updateBuildMessage(env.BUILD_RESULT, "Service Deploy Failed...  ×")
                 throw new Exception("deployment timed out...")
             }
             // checking deployment status
             try {
                 def rolling = this.getResource(namespace, name, kind)
+                sh "kubectl get pod -n ${namespace} -o wide"
                 lastRolling = rolling
                 if (this.isDeploymentReady(rolling)) {
-
                     readyCount++
                     echo "ready total count: ${readyCount}"
                     if (readyCount >= readyTarget) {
                         updateGitlabCommitStatus(name: 'deploy', state: 'success')
-                        new Utils().updateBuildMessage(env.BUILD_RESULT, "Service Deploy OK...  √")
+                        this.util.updateBuildMessage(env.BUILD_RESULT, "Service Deploy OK...  √")
                         break
                     }
 
                 } else {
                     readyCount = 0
-                    echo "reseting ready total count: ${readyCount}"
                     sh "kubectl get pod -n ${namespace} -o wide"
                 }
             } catch (Exception exc) {
                 updateGitlabCommitStatus(name: 'deploy', state: 'failed')
-                new Utils().updateBuildMessage(env.BUILD_RESULT, "Service Deploy Failed...  ×")
+                this.util.updateBuildMessage(env.BUILD_RESULT, "Service Deploy Failed...  ×")
                 echo "error: ${exc}"
             }
             sleep(sleepTime)
