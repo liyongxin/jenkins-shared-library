@@ -115,11 +115,5 @@ def genButtons(project="") {
                     "actionURL": "http://sonar.qq.com/dashboard?id=${project}"
             ]
     ]
-    if (env.TAG_NAME != "" && env.TAG_NAME != null) {
-        buttons.add([
-                "title": "验收测试结果",
-                "actionURL": "${env.ACCEPT_TEST_URL}artifact/artifacts/report.html"
-        ])
-    }
     return buttons
 }

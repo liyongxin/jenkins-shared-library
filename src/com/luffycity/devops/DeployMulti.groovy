@@ -96,9 +96,12 @@ def tplHandler() {
     if(!env.DEV_BRANCH){
         env.DEV_BRANCH = "develop"
     }
+    if(!env.QA_BRANCH){
+        env.QA_BRANCH = "master"
+    }
     if(env.BRANCH_NAME ==~ env.DEV_BRANCH){
         namespace = "demo"
-    }else if(env.TAG_NAME && env.BRANCH_NAME.matches(/v.*/)){
+    }else if(env.BRANCH_NAME ==~ env.QA_BRANCH){
         namespace = "qa"
     }else{
         throw new Exception("branch check not pass...")
